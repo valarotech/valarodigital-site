@@ -3,8 +3,8 @@
   document.documentElement.classList.add('js');
 
   // Google Apps Script web-app URL for the enquiry form.
-  // Leave empty until the "Valarodigital Leads" sheet is set up; the form then falls back to WhatsApp.
-  var FORM_ENDPOINT = '';
+  // If empty, the form falls back to WhatsApp.
+  var FORM_ENDPOINT = 'https://script.google.com/macros/s/AKfycbyf-hsikwkpo4dtVPuvqeZgl24f4ndWcBPR_cCjnaD78vXaD1v4OMsitKM_lBi3e1Fb/exec';
   var SHEET_NAME = 'Valarodigital Leads';
   var WHATSAPP = '917904931067';
 
