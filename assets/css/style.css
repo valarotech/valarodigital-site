@@ -328,6 +328,7 @@ p { margin: 0 0 1em; }
 .book-meta { display: flex; flex-wrap: wrap; gap: 8px 14px; font-size: .9rem; margin-bottom: 26px; color: rgba(255,255,255,.7); }
 .book-buy { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 22px; }
 .book-price { font-family: var(--font-head); font-size: 1.9rem; font-weight: 700; color: #fff; }
+.book-price .price-tax { font-family: var(--font); font-size: .78rem; font-weight: 500; color: rgba(255,255,255,.66); margin-left: 4px; white-space: nowrap; }
 .book-note { font-size: .86rem; color: rgba(255,255,255,.62); margin: 14px 0 0; max-width: 460px; }
 
 .book-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
