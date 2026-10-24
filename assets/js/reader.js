@@ -32,16 +32,30 @@
     String(ch.content || '').split(/\n{2,}/).forEach(function (blk) {
       blk = blk.trim(); if (!blk) return;
       var el;
-      if (blk.indexOf('## ') === 0) { el = document.createElement('h2'); el.textContent = blk.slice(3); }
+      var im = /^!\[([^\]]*)\]\((image\d+)\)$/.exec(blk);
+      if (im) { el = document.createElement('img'); el.alt = im[1]; el.draggable = false; el.setAttribute('data-name', im[2]); }
+      else if (blk.indexOf('### ') === 0) { el = document.createElement('h3'); el.textContent = blk.slice(4); }
+      else if (blk.indexOf('## ') === 0) { el = document.createElement('h2'); el.textContent = blk.slice(3); }
       else if (blk.indexOf('- ') === 0) { el = document.createElement('ul'); blk.split('\n').forEach(function (l) { var li = document.createElement('li'); li.textContent = l.replace(/^-\s*/, ''); el.appendChild(li); }); }
       else { el = document.createElement('p'); el.textContent = blk; }
       box.appendChild(el);
     });
+    loadImages(box);
     $('prev').disabled = cur === 0; $('next').disabled = cur === chapters.length - 1;
     $('pos').textContent = (cur + 1) + ' / ' + chapters.length;
     Array.prototype.forEach.call($('toc').children, function (li, i) { li.firstChild.className = i === cur ? 'on' : ''; });
     window.scrollTo(0, 0);
     if (!owned && ch.is_sample === false) {}
+  }
+  var imgCache = {};
+  async function loadImages(box) {
+    var els = box.querySelectorAll('img[data-name]'); if (!els.length) return;
+    var need = [];
+    els.forEach(function (el) { var n = el.getAttribute('data-name'); if (imgCache[n]) el.src = imgCache[n]; else need.push(n); });
+    if (!need.length) return;
+    var q = await sb.from('book_images').select('name,data').eq('book_slug', C.BOOK_SLUG).in('name', need);
+    (q.data || []).forEach(function (r) { imgCache[r.name] = r.data; });
+    els.forEach(function (el) { var d = imgCache[el.getAttribute('data-name')]; if (d) el.src = d; });
   }
   function go(i) { cur = Math.max(0, Math.min(chapters.length - 1, i)); render(chapters[cur]); $('sidebar').classList.remove('open'); }
 

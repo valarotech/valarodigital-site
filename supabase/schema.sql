@@ -10,6 +10,14 @@ create table if not exists public.book_chapters (
   unique (book_slug, position)
 );
 
+create table if not exists public.book_images (
+  book_slug text not null,
+  name text not null,
+  data text not null,               -- data: URI (compressed image)
+  is_sample boolean not null default false,
+  primary key (book_slug, name)
+);
+
 create table if not exists public.orders (
   id bigint generated always as identity primary key,
   user_id uuid not null references auth.users(id) on delete cascade,
@@ -30,6 +38,7 @@ create table if not exists public.entitlements (
 );
 
 alter table public.book_chapters enable row level security;
+alter table public.book_images   enable row level security;
 alter table public.orders        enable row level security;
 alter table public.entitlements  enable row level security;
 
@@ -42,6 +51,14 @@ using (
              where e.user_id = auth.uid() and e.book_slug = book_chapters.book_slug)
 );
 
+drop policy if exists "read images" on public.book_images;
+create policy "read images" on public.book_images for select to authenticated
+using (
+  is_sample
+  or exists (select 1 from public.entitlements e
+             where e.user_id = auth.uid() and e.book_slug = book_images.book_slug)
+);
+
 -- Users can see only their own purchase records. Nobody can write from the browser;
 -- only the server functions (service role) insert orders and entitlements.
 drop policy if exists "own entitlements" on public.entitlements;
@@ -49,8 +66,3 @@ create policy "own entitlements" on public.entitlements for select to authentica
 drop policy if exists "own orders" on public.orders;
 create policy "own orders" on public.orders for select to authenticated using (user_id = auth.uid());
 
--- Placeholder sample chapter. Replace with the real chapter once the book file is ready.
-insert into public.book_chapters (book_slug, position, title, content, is_sample) values
-('ai-agents-tamil', 1, 'Sample chapter (placeholder)',
- E'This is a placeholder for the free sample chapter.\n\n## A heading\n\nThe real chapter text will go here.', true)
-on conflict (book_slug, position) do nothing;

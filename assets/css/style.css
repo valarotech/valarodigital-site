@@ -403,3 +403,10 @@ body.rd-hidden .rd-cover { display: flex; }
 .rd-nav .btn-ghost:disabled { opacity: .4; }
 .auth-card .form { box-shadow: none; border: 0; padding: 0; background: none; }
 @media (min-width: 821px) { #menu { display: none; } }
+.parts { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.parts .part-name { color: var(--ink); font-weight: 600; margin: 0 0 .6em; }
+.parts .part-list { margin: 0; padding-left: 1.1em; color: var(--muted); font-size: .92rem; }
+.parts .part-list li { margin-bottom: .35em; }
+.rd-page h3 { font-size: 1.12rem; margin-top: 1.3em; }
+.rd-page img { max-width: 100%; height: auto; border-radius: 10px; margin: 1em 0; pointer-events: none; -webkit-user-drag: none; }
+.rd-page ul { padding-left: 1.2em; }
