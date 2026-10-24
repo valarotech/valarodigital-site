@@ -1,8 +1,8 @@
 // Creates a Razorpay order for the signed-in user. The price is fixed HERE, never taken from the browser.
 import { createClient } from "npm:@supabase/supabase-js@2";
 
-const PRICE_PAISE = 29900;               // Rs 299
-const BOOKS: Record<string, number> = { "ai-agents-tamil": PRICE_PAISE };
+// Prices in paise, fixed on the server. Rs 299 and Rs 199.
+const BOOKS: Record<string, number> = { "ai-agents-tamil": 29900, "claude-code-commands-ta": 19900 };
 const cors = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, apikey, content-type",

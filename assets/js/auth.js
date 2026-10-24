@@ -8,8 +8,8 @@
   window.vdSafeNext = function (n) {
     return (typeof n === 'string' && n.charAt(0) === '/' && n.charAt(1) !== '/' && n.indexOf('\\') < 0) ? n : C.BOOK_URL;
   };
-  window.vdHasBook = async function (userId) {
-    var r = await window.vdSb.from('entitlements').select('book_slug').eq('book_slug', C.BOOK_SLUG).eq('user_id', userId).limit(1);
+  window.vdHasBook = async function (userId, slug) {
+    var r = await window.vdSb.from('entitlements').select('book_slug').eq('book_slug', slug || C.BOOK_SLUG).eq('user_id', userId).limit(1);
     return !r.error && r.data && r.data.length > 0;
   };
 })();

@@ -6,5 +6,10 @@ window.VD_CONFIG = {
   RAZORPAY_KEY_ID: "rzp_test_TrcZIpoxfHLMJK",   // test key. Replace with the live Key ID at go-live.
   BOOK_SLUG: "ai-agents-tamil",
   BOOK_URL: "/books/ai-agents-tamil/",
-  READ_URL: "/read/"
+  READ_URL: "/read/",
+  // Every product sold here. Prices are enforced on the server (create-order function), not from this file.
+  BOOKS: {
+    "ai-agents-tamil":          { url: "/books/ai-agents-tamil/",          read: "/read/",                          price: 299, label: "Tamil AI Agents book" },
+    "claude-code-commands-ta":  { url: "/books/claude-code-commands-tamil/", read: "/read/?b=claude-code-commands-ta", price: 199, label: "Claude Code commands guide (Tamil)" }
+  }
 };

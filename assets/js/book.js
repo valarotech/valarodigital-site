@@ -1,6 +1,7 @@
 // Book page: Buy now / Read now button
 (function () {
   var C = window.VD_CONFIG, sb = window.vdSb, btn = document.getElementById('buy-btn');
+  var SLUG = btn.getAttribute('data-book') || C.BOOK_SLUG, B = C.BOOKS[SLUG];
   var note = document.getElementById('buy-note'), label = btn.querySelector('.lbl');
   function say(t, bad) { note.textContent = t; note.style.color = bad ? '#ffb4a2' : ''; }
   function loadRzp() {
@@ -13,7 +14,7 @@
   async function waitForAccess(uid) {
     say('Payment received. Unlocking your book…');
     for (var i = 0; i < 20; i++) {
-      if (await window.vdHasBook(uid)) { location.href = C.READ_URL; return; }
+      if (await window.vdHasBook(uid, SLUG)) { location.href = B.read; return; }
       await new Promise(function (r) { setTimeout(r, 2000); });
     }
     say('Your payment went through, but the book has not unlocked yet. Please wait a minute and refresh, or WhatsApp us on +91 79049 31067.', true);
@@ -25,15 +26,15 @@
       var res = await fetch(C.SUPABASE_URL + '/functions/v1/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token, 'apikey': C.SUPABASE_ANON_KEY },
-        body: JSON.stringify({ book_slug: C.BOOK_SLUG })
+        body: JSON.stringify({ book_slug: SLUG })
       });
       var d = await res.json();
-      if (d.already) { location.href = C.READ_URL; return; }
+      if (d.already) { location.href = B.read; return; }
       if (!res.ok || !d.order_id) throw new Error(d.error || 'order');
       await loadRzp();
       var rz = new window.Razorpay({
         key: d.key_id, amount: d.amount, currency: 'INR', order_id: d.order_id,
-        name: 'Valarodigital', description: 'Tamil AI Agents book (online access)',
+        name: 'Valarodigital', description: B.label + ' (online access)',
         prefill: { email: session.user.email }, theme: { color: '#ff6a2b' },
         handler: function () { waitForAccess(session.user.id); },
         modal: { ondismiss: function () { btn.disabled = false; say(''); } }
@@ -44,13 +45,13 @@
   }
   async function init() {
     var r = await sb.auth.getSession(), session = r.data.session;
-    if (session && await window.vdHasBook(session.user.id)) {
-      label.textContent = 'Read now'; btn.href = C.READ_URL; btn.onclick = null;
+    if (session && await window.vdHasBook(session.user.id, SLUG)) {
+      label.textContent = 'Read now'; btn.href = B.read; btn.onclick = null;
       say('You own this book. Signed in as ' + session.user.email + '.'); return;
     }
     btn.addEventListener('click', function (e) {
       e.preventDefault();
-      if (!session) { location.href = '/login/?next=' + encodeURIComponent(C.BOOK_URL + '?buy=1'); return; }
+      if (!session) { location.href = '/login/?next=' + encodeURIComponent(B.url + '?buy=1'); return; }
       buy(session);
     });
     if (session) { say('Signed in as ' + session.user.email + '.'); if (/[?&]buy=1/.test(location.search)) buy(session); }
