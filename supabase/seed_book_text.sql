@@ -62,7 +62,7 @@ Agent usage:
 
 நீங்க ஒரு complete வேலை கொடுக்கிறீங்க → Agent பல steps-ஆ தானாக வேலை செய்கிறது → final result உங்ககிட்ட கொண்டு வருகிறது.
 
-இதைத்தான் course “go handle this and come back” mode என்று சொல்கிறது.
+இதைத்தான் “go handle this and come back” mode என்று சொல்லலாம்.
 
 ## Sub-agent என்றால்?
 
@@ -82,7 +82,7 @@ Research sub-agent
 
 Result
 
-Screenshot சொல்லும் முக்கிய mindset:
+முக்கிய mindset:
 
 நீங்க worker இல்லை. Manager.
 
@@ -127,7 +127,7 @@ Agent-கிட்ட vague-ஆ வேலை கொடுத்தா, அது
 
 ### ✅ நல்ல Scoped instruction
 
-Screenshot example-ன் meaning:
+இந்த example-ன் meaning:
 
 /notes folder-ல இருக்கிற ஒவ்வொரு file-ஐயும் பாரு. Content based on ஒரு clear title கொடு. Obvious typo இருந்தா fix பண்ணு. மேலே one-line summary சேர். எதையும் delete பண்ணாதே. வேலையை ஆரம்பிப்பதற்கு முன் plan காட்டணும். எல்லாம் முடிந்த பிறகு என்ன என்ன மாற்றினாய் என்று list கொடு, நான் review பண்ணுகிறேன்.
 
@@ -135,7 +135,7 @@ Screenshot example-ன் meaning:
 
 ## நல்ல Agent Brief-க்கு தேவையான 4 விஷயங்கள்
 
-Screenshot இதை ரொம்ப முக்கியமா சொல்கிறது.
+இது ரொம்ப முக்கியம்.
 
 ### ① Exact Scope
 
@@ -179,13 +179,13 @@ Screenshot இதை ரொம்ப முக்கியமா சொல்க
 
 அப்போதான் நீங்க review பண்ண முடியும்.
 
-இதைத்தான் இந்த course Scoping என்று சொல்கிறது.
+இதைத்தான் Scoping என்று சொல்கிறோம்.
 
 ## First Real Multi-Step Task எப்படி Hand-off பண்ணுவது?
 
 ![Task brief கொடுத்தல், Agent வேலை செய்தல், Result திரும்ப வருதல் என்ற Scoped hand-off ஓட்டம்](image3)
 
-Screenshot-ல நல்ல workflow கொடுத்திருக்காங்க:
+நல்ல workflow இப்படி இருக்கும்:
 
 Scoped hand-off → Work → Result back
 
@@ -199,7 +199,7 @@ Agent-க்கு வேலை கொடுத்து, முதல் தட
 
 அதாவது Agent என்ன செய்யப் போகிறது என்பதை முதலில் புரிந்துகொண்டு, பிறகு execute செய்ய வைக்கிறோம்.
 
-## இந்த course சொல்ற முக்கிய rule: நீங்க “Review” பண்ணணும்
+## முக்கிய rule: நீங்க “Review” பண்ணணும்
 
 ஒரு line எனக்கு இதில் ரொம்ப முக்கியமா தெரிகிறது:
 
@@ -235,7 +235,7 @@ Agent என்ன change செய்தது? → சரியா? → approv
 
 ![Beginners செய்யும் தவறுகள்: Vague goals, No stop condition, Too many tools, No test run](image4)
 
-Screenshot இதை மிகவும் clear-ஆ சொல்கிறது.
+இது மிகவும் clear-ஆன விஷயம்.
 
 ### ❌ Mistake 1: Vague Goal
 
@@ -269,7 +269,7 @@ Agent-க்கு தேவையில்லாத permissions/tools எல்
 
 உதாரணத்துக்கு ஒரு Agent email read + draft மட்டும் பண்ணணும்னா, அதற்குத் தேவையான access மட்டும் கொடுப்பது safer.
 
-Course-ன் principle:
+முக்கிய principle:
 
 Tight by default, loosened on purpose.
 
@@ -329,7 +329,7 @@ Trust build பண்ணு
 
 ![5-Part Agent Recipe: Name, Soul, Job, Keys, Stop Condition](image5)
 
-இந்த screenshots-ல இதுதான் core concept.
+இதுதான் core concept.
 
 ஒவ்வொரு நல்ல Agent-க்கும் இந்த 5 விஷயங்கள் இருக்கணும்:
 
@@ -337,7 +337,7 @@ Trust build பண்ணு
 
 Agent-க்கு ஒரு short name.
 
-Examples screenshot-ல:
+Examples:
 
 - inbox-triage
 - code-review-buddy
@@ -363,7 +363,7 @@ Agent-ன் ஒரே முக்கிய mission.
 
 ஒரு sentence-ல எழுத முடியணும்.
 
-Course-ன் idea:
+முக்கிய idea:
 
 Job-ஐ ஒரு sentence-ல சொல்ல முடியலனா, scope ரொம்ப பெரியதாக இருக்க வாய்ப்பு இருக்கிறது.
 
@@ -384,7 +384,7 @@ Agent என்னென்ன resources/tools access பண்ணலாம்?
 - Terminal commands run பண்ணலாமா?
 - Internet access இருக்கலாமா?
 
-இதைத்தான் screenshot seatbelt மாதிரி describe பண்ணுகிறது.
+இதை seatbelt மாதிரி நினைக்கலாம்.
 
 அதாவது Agent-க்கு:
 
@@ -404,7 +404,7 @@ Example:
 
 Stop condition ideally measurable-ஆ இருக்கணும்.
 
-## Screenshot-ல இருக்கும் inbox-triage example
+## inbox-triage example
 
 இதைக் கொஞ்சம் easy Tamil-ல மாற்றினா:
 
@@ -432,7 +432,7 @@ Gmail-ஐ read பண்ணலாம். /drafts/inbox-triage/ folder-ல் dra
 
 Agent-க்கு power கொடுக்கிறோம், ஆனால் unlimited power கொடுக்கவில்லை.
 
-## எல்லா screenshots-யும் சேர்த்து ஒரு Formula
+## எல்லாவற்றையும் சேர்த்து ஒரு Formula
 
 இதை மட்டும் நினைவில் வச்சுக்கிட்டாலே இந்த முழு lesson புரிஞ்ச மாதிரி:
 
@@ -470,7 +470,7 @@ Goal → Plan → Multiple actions → Validation → Result
 
 Boundary எங்கே? Permission என்ன? Success criteria என்ன? எப்போது stop பண்ணணும்? Human approval எங்கே வரணும்?
 
-இந்த 5 screenshots-லிருந்து நான் எடுத்துக்கொள்ளச் சொல்ற #1 lesson இதுதான்:
+இந்த 5 பகுதிகளிலிருந்து நான் எடுத்துக்கொள்ளச் சொல்ற #1 lesson இதுதான்:
 
 “Agent-க்கு எப்படி வேலை செய்யணும் என்று ஒவ்வொரு click-ஆ சொல்லாதீங்க. என்ன result வேண்டும், எங்கே வேலை செய்யலாம், எதை செய்யக்கூடாது, எப்போது நிறுத்த வேண்டும் என்பதை crystal clear-ஆ சொல்லுங்க.”
 
@@ -550,7 +550,7 @@ Sub-agents = Specialist Engineers
 
 ## எப்போது ஒரு Job-ஐ Agents-ஆ Split பண்ணணும்?
 
-Screenshot 3 situations சொல்கிறது.
+3 situations உள்ளன.
 
 ### Case 1: வேலைக்கு clearly different specialists தேவை
 
@@ -592,7 +592,7 @@ Modular-ஆ Agents இருந்தால் அந்த component மட்�
 
 ## முக்கிய Warning: Over-engineer பண்ணாதீங்க
 
-Course ரொம்ப practical-ஆ ஒரு விஷயம் சொல்கிறது:
+ரொம்ப practical-ஆ ஒரு விஷயம்:
 
 One Agent first. அது break ஆகும் இடம் தெரிந்த பிறகுதான் split பண்ணுங்க.
 
@@ -632,7 +632,7 @@ Split that responsibility
 
 Premature decomposition avoid பண்ணு.
 
-Screenshot இன்னொரு important rule சொல்கிறது:
+இன்னொரு important rule:
 
 Sub-agents ஒருத்தரோட ஒருத்தர் direct-ஆ பேசிக்கொள்ள விடாதீங்க.
 
@@ -690,9 +690,9 @@ Agent team = தொடர்ந்து உங்களோட வேலை ச�
 
 ## TeamCreate என்ன?
 
-Screenshot படி TeamCreate என்பது session-க்குள் ஒரு team-ஐ spin up செய்யும் shortcut concept. [ஆசிரியர் சரிபார்க்க வேண்டும்]
+TeamCreate என்பது session-க்குள் ஒரு team-ஐ spin up செய்யும் shortcut concept. [ஆசிரியர் சரிபார்க்க வேண்டும்]
 
-ஆனா course சொல்லும் warning முக்கியம்:
+ஆனா இந்த warning முக்கியம்:
 
 ### ❌ Beginner mistake
 
@@ -736,7 +736,7 @@ Specialists → Orchestrator → Specialists
 
 ## Four Sub-Agent Patterns
 
-இந்த screenshots-ல எனக்கு மிகவும் useful-ஆ தெரிந்த section இதுதான்.
+இந்தப் பகுதிகளில் எனக்கு மிகவும் useful-ஆ தெரிந்த section இதுதான்.
 
 நான்கு reusable patterns கொடுக்கப்பட்டிருக்கு.
 
@@ -801,7 +801,7 @@ Main conversation-க்கு தேவையில்லாத நூற்ற
 
 ஒரே வேலை பல items-க்கு independently செய்ய வேண்டியிருந்தால் parallel use பண்ணலாம்.
 
-உதாரணம் screenshot-ல்:
+உதாரணம்:
 
 5 landing pages review பண்ணணும்.
 
@@ -847,7 +847,7 @@ Simplifier unnecessary explanation கொடுக்காமல் result ம�
 
 ### இந்த 4 Patterns எப்படி நினைவில் வைக்கிறது?
 
-Course ஒரு simple mental test கொடுக்கிறது.
+ஒரு simple mental test இருக்கு.
 
 “நான் இப்ப ஏதாவது எழுதினேனா?”
 
@@ -911,7 +911,7 @@ Example:
 
 அவ்வளவுதான்.
 
-Claude பின்னாடி full workflow invoke பண்ணும் என்ற model screenshot-ல் காட்டப்படுகிறது.
+Claude பின்னாடி full workflow invoke பண்ணும் என்பது இந்த model-ன் அடிப்படை.
 
 Another example:
 
@@ -925,7 +925,7 @@ Long reusable prompt/workflow → ஒரு short command
 
 ## எதை Slash Command ஆக்கணும்?
 
-Screenshot-ல நல்ல rule இருக்கு.
+நல்ல rule ஒன்று இருக்கு.
 
 ### ✅ Slash command ஆக்கலாம்
 
@@ -958,7 +958,7 @@ First make the workflow reliable. பிறகு shortcut உருவாக்
 
 ## Project-scoped vs User-scoped Commands
 
-Screenshot இன்னொரு useful separation கொடுக்கிறது.
+இன்னொரு useful separation இருக்கு.
 
 ### Project-scoped
 
@@ -1038,13 +1038,13 @@ Approval வந்தால் மட்டும் continue.
 
 ## Useful Hook examples
 
-Screenshots பல practical guardrails காட்டுது.
+பல practical guardrails இருக்கு.
 
 ### Pre-bash guardrail
 
 Dangerous shell commands detect பண்ணி human confirmation கேட்கலாம்.
 
-Examples screenshot-ல்:
+Examples:
 
 - destructive removal
 - database dropping
@@ -1105,7 +1105,7 @@ Hooks நல்லது என்பதற்காக everything needs approva
 
 அப்படி பண்ணிட்டா automation purpose-யே போயிடும்.
 
-Course சொல்கிற nice analogy:
+ஒரு nice analogy:
 
 Hooks பூட்டு மாதிரி.
 
@@ -1137,7 +1137,7 @@ Hooks பூட்டு மாதிரி.
 
 இதுவரை individual Agents பார்த்தோம்.
 
-இப்ப screenshots எல்லாத்தையும் connect பண்ணி ஒரு Personal Agent Stack build பண்ணுது.
+இப்ப இதெல்லாத்தையும் connect பண்ணி ஒரு Personal Agent Stack build பண்ணலாம்.
 
 ![Morning Briefing, Inbox Triage, Content Draft, CRM Updater, Weekly Report அடங்கிய Personal Agent Stack](image8)
 
@@ -1155,7 +1155,7 @@ You
 
 └── Weekly Report
 
-Course-ன் interesting recommendation:
+Interesting recommendation:
 
 3–5 useful Agents போதும்.
 
@@ -1167,7 +1167,7 @@ Course-ன் interesting recommendation:
 
 ## எந்த Agents build பண்ணுவது?
 
-Course ஒரு நல்ல practical method கொடுக்குது.
+ஒரு நல்ல practical method இருக்கு.
 
 கடந்த சில நாட்களில் நீங்க repeatedly செய்த வேலைகளை எழுதுங்க.
 
@@ -1217,7 +1217,7 @@ Agent name பார்த்தவுடன்:
 
 ## Dead Agents-ஐ வைத்துக்கொள்ள வேண்டாம்
 
-Screenshot-ல் interesting housekeeping rule இருக்கு:
+Interesting housekeeping rule ஒன்று இருக்கு:
 
 ஒரு Agent-ஐ நீண்ட காலமா use பண்ணவே இல்லைனா, அது உண்மையிலேயே தேவையா என்று பாருங்க.
 
@@ -1227,7 +1227,7 @@ Useful operational system build பண்ணுவதுதான் goal.
 
 ## இந்த முழு lesson-ன் Architecture
 
-Screenshot எல்லாத்தையும் ஒரே architecture-ஆ பார்த்தா:
+எல்லாத்தையும் ஒரே architecture-ஆ பார்த்தா:
 
 YOU
 
@@ -1272,7 +1272,7 @@ DONE
 
 ## உங்களுக்கு Architect perspective-ல முக்கியமான takeaway
 
-இந்த course உண்மையில் “Claude எப்படி use பண்ணுவது?” மட்டும் teach பண்ணவில்லை.
+இது உண்மையில் “Claude எப்படி use பண்ணுவது?” மட்டும் teach பண்ணவில்லை.
 
 இது essentially:
 
@@ -1302,7 +1302,7 @@ Agent stack → Small operational system
 
 “முதலில் ஒரு Agent-க்கு clear வேலை கொடுத்து reliable ஆக்கு; வேலை genuinely வேறு responsibilities-ஆ split ஆகும்போது மட்டும் specialists உருவாக்கு; Orchestrator மூலம் coordinate பண்ணு; Hooks மூலம் risky actions-ஐ control பண்ணு; repeat ஆகிற stable workflows-ஐ slash commands/automation-ஆ மாற்று.”
 
-இதுதான் இந்த 16 screenshots சொல்லும் core idea.
+இதுதான் இங்கே உள்ள core idea.
 
 நீங்கள் கற்றுக்கொண்டவை
 
@@ -1324,7 +1324,7 @@ Agent stack → Small operational system
 
 ## Scheduling: நாம இல்லாமலேயே வேலை நடக்க வைப்பது
 
-Claude Code ஒரு task-ஐ schedule பண்ணி மறுபடியும் run செய்ய முடியும் என்று screenshot explain செய்கிறது.
+Claude Code ஒரு task-ஐ schedule பண்ணி மறுபடியும் run செய்ய முடியும்.
 
 இதில் 3 levels காட்டப்பட்டிருக்கு.
 
@@ -1334,7 +1334,7 @@ Claude Code ஒரு task-ஐ schedule பண்ணி மறுபடியு
 
 Session open இருக்கும்போது repeated checking.
 
-Example screenshot:
+Example:
 
 /loop 1h check [inbox/folder/feed]
 
@@ -1348,7 +1348,7 @@ and post me a one-line summary of anything new
 
 இது temporary monitoring மாதிரி.
 
-Screenshot படி இது அந்த session-க்குள் இருக்கும் மற்றும் auto-expire ஆகும் என்பதால் short-term monitoring-க்கு use பண்ணலாம். [ஆசிரியர் சரிபார்க்க வேண்டும்]
+இது அந்த session-க்குள் இருக்கும் மற்றும் auto-expire ஆகும் என்பதால் short-term monitoring-க்கு use பண்ணலாம். [ஆசிரியர் சரிபார்க்க வேண்டும்]
 
 ### Level 2: One-time reminder
 
@@ -1374,7 +1374,7 @@ Agent + Schedule = Routine
 
 ## Tiny Automation
 
-Course இங்கே ஒரு நல்ல principle கொடுக்குது:
+இங்கே ஒரு நல்ல principle:
 
 Small chains beat big agents.
 
@@ -1408,7 +1408,7 @@ Automation எல்லாத்தையும் செய்யட்டு�
 
 ## முதல் Automation எப்படி தேர்ந்தெடுக்கணும்?
 
-Screenshot கொடுத்த examples practical-ஆ இருக்கு:
+இந்த examples practical-ஆ இருக்கு:
 
 ### Weekly recap
 
@@ -1440,7 +1440,7 @@ Human Approval
 
 ## Golden Rule: முதலில் manual, பிறகுதான் Automation
 
-இந்த screenshots திரும்பத் திரும்ப சொல்லும் முக்கியமான principle:
+திரும்பத் திரும்ப வரும் முக்கியமான principle:
 
 ஒரு workflow-ஐ முதலில் manually run பண்ணி பாருங்க. அது reliable-ஆ வேலை செய்கிறது என்று தெரிந்த பிறகு schedule பண்ணுங்க.
 
@@ -1506,7 +1506,7 @@ Event வந்ததுதான் trigger.
 
 ## Webhook-ஐ மிக simple-ஆ புரிந்துகொள்ளலாம்
 
-Screenshot-ன் explanation-ஐ normal Tamil-ல சொன்னா:
+இதை normal Tamil-ல சொன்னா:
 
 Webhook ஒரு public URL endpoint மாதிரி.
 
@@ -1532,7 +1532,7 @@ Process
 
 Draft result
 
-Screenshot examples:
+Examples:
 
 ### New Lead
 
@@ -1566,7 +1566,7 @@ Webhook = unpredictable event-based work
 
 New customer enquiry வந்தவுடன் process.
 
-இதுதான் screenshot சொல்லும் pairing:
+இதுதான் pairing:
 
 Predictable work → Routine
 
@@ -1596,7 +1596,7 @@ Wrong/unreviewed message
 
 Customer 😬
 
-Course recommend பண்ற model:
+Recommended model:
 
 Webhook
 
@@ -1658,7 +1658,7 @@ Same project-ன் இன்னொரு working folder + வேறு branch.
 
 ### Worktree Flow
 
-Example screenshot:
+Example:
 
 Brain 1
 
@@ -1692,7 +1692,7 @@ Same Repository
 
 ## Worktree எப்போது useful?
 
-Screenshot மூன்று நல்ல situations சொல்கிறது.
+மூன்று நல்ல situations உள்ளன.
 
 ### ① Long task + quick unrelated fix
 
@@ -1716,7 +1716,7 @@ Worktree B → Approach B
 
 ## Worktree எப்போது வேண்டாம்?
 
-Course explicit-ஆ சொல்கிறது:
+இதை explicit-ஆ சொல்லணும்னா:
 
 ### ❌ Normal solo task
 
@@ -1734,7 +1734,7 @@ Tool இருக்கிறது என்பதற்காக architecture 
 
 ## “3-Session Ceiling”
 
-இது இந்த screenshots-ல முக்கியமான productivity idea.
+இது முக்கியமான productivity idea.
 
 Worktrees பார்த்ததும்:
 
@@ -1742,9 +1742,9 @@ Worktrees பார்த்ததும்:
 
 என்று தோணலாம்.
 
-Course சொல்றது: அது productivity increase ஆகாம reverse ஆகலாம்.
+முக்கியம்: அது productivity increase ஆகாம reverse ஆகலாம்.
 
-Screenshot recommend செய்யும் practical ceiling:
+Practical ceiling:
 
 ஒரே நேரத்தில் சுமார் 3 Claude sessions. [ஆதாரம் சேர்க்க வேண்டும்]
 
@@ -1765,7 +1765,7 @@ AI execution speed → Human review speed
 
 ## 3 sessions-ஐ எப்படி பயன்படுத்தலாம்?
 
-Screenshot ஒரு useful model கொடுக்கிறது:
+ஒரு useful model:
 
 ### Session 1: Long-running
 
@@ -1791,7 +1791,7 @@ Session C = Reviewer / Integrator
 
 ## Most important lesson: More Claude ≠ More Productivity
 
-Course சொல்லும் subtle point:
+ஒரு subtle point:
 
 AI instances அதிகப்படுத்துவது objective இல்லை.
 
@@ -1831,7 +1831,7 @@ Parallel Claude sessions-க்கு rushed instruction கொடுத்த�
 
 ### ❌ Unreviewed merge = done என்று நினைப்பது
 
-Course-ன் view:
+View:
 
 நீங்க review பண்ணாத merge உண்மையில் finished work கிடையாது.
 
@@ -1965,7 +1965,7 @@ Manual → Agent → Reliable Agent → Guardrails → Repeatable workflow → A
 
 முதலில் intelligence-ஐ automate பண்ணாதீங்க. முதலில் ஒரு நல்ல working process உருவாக்குங்க. அந்த process repeatable + trustworthy ஆன பிறகு automation சேர்க்குங்க.
 
-இந்த screenshots முழுக்க எனக்கு தெரியும் மிக முக்கியமான message:
+எல்லாவற்றிலிருந்தும் எனக்கு தெரியும் மிக முக்கியமான message:
 
 Claude வேகமாக வேலை செய்யுது என்பதால நாம அதிக வேலை start பண்ணுவது goal இல்லை. Claude செய்யும் வேலையை நாம குறைந்த effort-ல confidently review செய்து approve செய்யக்கூடிய system build பண்ணுவதுதான் goal.
 
@@ -2033,7 +2033,7 @@ Don't write anything in it yet.
 
 ## Step 2: Agent-க்கு identity + behaviour கொடுக்குறோம்
 
-Screenshot-ல roughly இந்த structure இருக்கு:
+roughly இந்த structure இருக்கும்:
 
 name: daily-content-draft
 
@@ -2049,7 +2049,7 @@ SOUL என்றால்:
 
 Agent எப்படி எழுதணும் / behave பண்ணணும்?
 
-Screenshot example-ல் Agent ஒரு ghostwriter மாதிரி behave செய்ய வேண்டும்.
+இந்த example-ல் Agent ஒரு ghostwriter மாதிரி behave செய்ய வேண்டும்.
 
 அது user உண்மையிலேயே எப்படி பேசுறாரோ அந்த style-ல எழுதணும்.
 
@@ -2072,7 +2072,7 @@ SOUL = அதை எந்த style-ல செய்யணும்
 
 ## Step 3: JOB
 
-Screenshot example-ல் rough idea கொடுத்தால் exactly 3 versions உருவாக்க சொல்லியிருக்காங்க.
+இந்த example-ல் rough idea கொடுத்தால் exactly 3 versions உருவாக்க சொல்லலாம்.
 
 ### Version 1
 
@@ -2106,7 +2106,7 @@ Output எப்படி இருக்கணும் என்பதே pred
 
 இதுதான் security point.
 
-இந்த Agent-க்கு screenshot-ல்:
+இந்த Agent-க்கு:
 
 tools: Read, Write
 
@@ -2114,7 +2114,7 @@ tools: Read, Write
 
 அதாவது Agent-க்கு வேலை செய்ய என்ன tools உண்மையில் தேவையோ, அது மட்டும்.
 
-Screenshot specifically சொல்றது:
+Specifically:
 
 Default to the fewest tools that get the job done.
 
@@ -2128,7 +2128,7 @@ Default to the fewest tools that get the job done.
 
 ✅ Draft folder write access
 
-ஆனால் screenshot instructions படி:
+ஆனால் instructions படி:
 
 ❌ Internet வேண்டாம்
 
@@ -2148,7 +2148,7 @@ Agent எப்போது:
 
 அது explicit-ஆ define செய்யப்படுகிறது.
 
-Screenshot example-ல்:
+இந்த example-ல்:
 
 - மூன்று files எழுதப்பட்டிருக்கணும்.
 - குறிப்பிட்ட drafts location-ல் இருக்கணும்.
@@ -2175,7 +2175,7 @@ Use the daily-content-draft agent on this idea:
 
 என்று கொடுக்குறோம்.
 
-Claude என்ன செய்யும் என்று screenshot சொல்கிறது:
+Claude என்ன செய்யும் என்றால்:
 
 Agent file படிக்கும்
 
@@ -2201,7 +2201,7 @@ Agent எப்படி behave செய்கிறது என்று க�
 
 ## ⭐ மிக முக்கியமான Step 7: Prompt-ஐ fix பண்ணாதீங்க, Agent FILE-ஐ fix பண்ணுங்க
 
-இந்த screenshot-ல் எனக்கு மிகவும் பிடித்த concept இதுதான்.
+இதில் எனக்கு மிகவும் பிடித்த concept இதுதான்.
 
 Suppose Agent எழுதிய content:
 
@@ -2249,7 +2249,7 @@ Same improvement exists
 
 Future runs improve
 
-Screenshot இதை ரொம்ப நல்லா சொல்லுது:
+இதை ரொம்ப நல்லா சொல்லலாம்:
 
 Every fix to the file is permanent; every fix to the prompt evaporates when you close the session.
 
@@ -2261,7 +2261,7 @@ Operating instructions-லேயே correction சேர்த்துடுங
 
 ## 🧪 எத்தனை தடவை Test பண்ணணும்?
 
-Screenshot recommendation:
+Recommendation:
 
 Different rough ideas வைத்து இன்னும் 2 முறை run பண்ணிப் பாருங்க.
 
@@ -2320,7 +2320,7 @@ Reusable Runs
 
 ## முழு Agent எப்படி இருக்கிறது?
 
-இந்த screenshots மட்டும் வைத்து mental model:
+இவற்றை மட்டும் வைத்து mental model:
 
 daily-content-draft
 
@@ -2436,7 +2436,7 @@ Review findings கொடுத்ததும் stop. தானாக implemen
 
 ஒரு நல்ல Agent என்பது பெரிய clever prompt கிடையாது. அது clear job + consistent behaviour + minimum permissions + measurable stopping point கொண்ட reusable worker.
 
-மேலும் இந்த screenshot சொல்லும் மிக practical lesson:
+மேலும் மிக practical lesson:
 
 Agent தவறு செய்தால் ஒவ்வொரு முறையும் prompt-ல் correction கொடுக்காதீங்க. அந்தத் தவறு மறுபடியும் நடக்காமல் Agent definition-ஐ improve பண்ணுங்க.
 
@@ -2452,7 +2452,7 @@ Agent தவறு செய்தால் ஒவ்வொரு முறை�
 
 - உங்கள் சொந்த Agent-க்கு ஒரு Name மற்றும் ஒரு வாக்கிய Job எழுதுங்கள்.
 - முதல் run-ல் வரும் குறைகளை Agent file-ல் எப்படிச் சேர்ப்பீர்கள்?$vd$, false),
-('ai-agents-tamil', 17, $vd$பின்னிணைப்பு A: Agent file-களை எங்கே வைப்பது?$vd$, $vd$ஆமாம் 👍 நீங்களே agents folder create பண்ணலாம். Screenshot-ல் C:\Users\[பயனர் பெயர்]\.claude இருக்கிறது, ஆனால் agents folder இல்லை. அது problem இல்லை.
+('ai-agents-tamil', 17, $vd$பின்னிணைப்பு A: Agent file-களை எங்கே வைப்பது?$vd$, $vd$நீங்களே agents folder-ஐ create பண்ணலாம். C:\Users\[பயனர் பெயர்]\.claude folder-ல agents folder இல்லாமல் இருக்கலாம். அது problem இல்லை.
 
 Claude Code official docs படி custom subagents Markdown files-ஆ .claude/agents/ directory-ல் define செய்யப்படுகின்றன. [code.claude.com], [code.claude.com]
 
@@ -2462,7 +2462,7 @@ Claude Code official docs படி custom subagents Markdown files-ஆ .claude/
 
 C:\Users\[பயனர் பெயர்]\.claude\agents
 
-இதுதான் உங்கள் current screenshot-க்கு பொருத்தமான location.
+இதுதான் உங்கள் எல்லா projects-க்கும் பொருந்தும் location.
 
 அங்கே manually:
 
@@ -2495,7 +2495,7 @@ daily-content-draft.md
 
 ## உங்களுக்கு இப்போது நான் recommend செய்வது
 
-Course-ஐ learn/test பண்ணிக்கிட்டு இருப்பதால், screenshot-ல் இருக்கிற:
+இப்போது கற்றுக்கொள்ளும் நிலையில் இருப்பதால், இந்த folder:
 
 C:\Users\[பயனர் பெயர்]\.claude
 
@@ -2531,7 +2531,7 @@ C:\Users\[பயனர் பெயர்]\.claude
 
 Important: agents folder default-ஆ already இருக்கணும்னு அவசியமில்லை. Custom agent இன்னும் create செய்யாததால் folder இல்லாமல் இருப்பது இயல்பான situation.
 
-நீங்க course-ல இருக்குற daily-content-draft.md first agent-ஐ create பண்ணுறீங்கனா, அடுத்த step-ஆ அந்த .md file-க்குள் exactly என்ன எழுதணும்னு நம்ம சேர்ந்து build பண்ணலாம்.$vd$, false),
+முதல் agent-ஆ daily-content-draft.md-ஐ create பண்ணினால், அடுத்த step: அந்த .md file-க்குள் exactly என்ன எழுதணும் என்பதை எழுதிப் பார்க்கலாம்.$vd$, false),
 ('ai-agents-tamil', 18, $vd$சொற்களஞ்சியம் (Glossary)$vd$, $vd$- ஏஜென்ட் (Agent): Goal, Tools, Permission கொடுத்தால் பல படிகளைத் தானாகச் செய்து முடிவைக் கொண்டுவரும் AI.
 - துணை ஏஜென்ட் (Sub-agent): ஒரு குறிப்பிட்ட வேலைக்காக Main Agent பயன்படுத்தும் தற்காலிக helper.
 - ஒருங்கிணைப்பாளர் (Orchestrator): வேலையைப் புரிந்து, எந்த specialist தேவை என்று முடிவுசெய்து, முடிவுகளை ஒருங்கிணைக்கும் Agent.
@@ -2568,7 +2568,7 @@ Important: agents folder default-ஆ already இருக்கணும்ன�
 
 பிற மேற்கோள்கள் (Other references)
 
-- புத்தகத்தில் “course” மற்றும் “screenshots” எனக் குறிப்பிடப்படும் மூலப் பாடநெறி: பெயர், நடத்துபவர், தளம், ஆண்டு. [முழுமையான மேற்கோள் தகவல் தேவை]
+- இந்தப் புத்தகத்தின் கருத்துகளுக்கு அடிப்படையான மூலப் பாடநெறி: பெயர், நடத்துபவர், தளம், ஆண்டு. [முழுமையான மேற்கோள் தகவல் தேவை]
 
 நூல்கள் மற்றும் ஆய்வுக் கட்டுரைகள் (Books and research papers)
 
