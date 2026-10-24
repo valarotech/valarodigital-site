@@ -15,6 +15,8 @@
       f.appendChild(h('p', 'These go on your GST invoice. We email the invoice to ' + (window.__vdEmail || 'your email') + '.', 'bill-sub'));
       var l1 = h('label', 'Full name'), name = document.createElement('input');
       name.type = 'text'; name.required = true; name.maxLength = 100; name.autocomplete = 'name'; l1.appendChild(name); f.appendChild(l1);
+      var lm = h('label', 'Mobile number'), mob = document.createElement('input');
+      mob.type = 'tel'; mob.required = true; mob.inputMode = 'numeric'; mob.maxLength = 14; mob.autocomplete = 'tel'; lm.appendChild(mob); f.appendChild(lm);
       var l2 = h('label', 'State'), st = document.createElement('select'); st.required = true;
       var o0 = document.createElement('option'); o0.value = ''; o0.textContent = 'Select state'; st.appendChild(o0);
       STATES.forEach(function (x) { var o = document.createElement('option'); o.value = x; o.textContent = x; st.appendChild(o); });
@@ -23,6 +25,8 @@
       pin.type = 'text'; pin.required = true; pin.inputMode = 'numeric'; pin.maxLength = 6; pin.pattern = '[1-9][0-9]{5}'; pin.autocomplete = 'postal-code'; l3.appendChild(pin); f.appendChild(l3);
       var l4 = h('label', 'Address (optional)'), addr = document.createElement('textarea');
       addr.rows = 2; addr.maxLength = 300; addr.autocomplete = 'street-address'; l4.appendChild(addr); f.appendChild(l4);
+      var err = h('p', '', 'bill-err'); err.setAttribute('role', 'alert'); f.appendChild(err);
+      function alert_(t) { err.textContent = t; }
       var row = h('div', '', 'bill-row'), go = h('button', 'Continue to payment', 'btn btn-primary'), no = h('button', 'Cancel', 'btn btn-ghost');
       go.type = 'submit'; no.type = 'button'; row.appendChild(go); row.appendChild(no); f.appendChild(row);
       ov.appendChild(f); document.body.appendChild(ov); name.focus();
@@ -30,8 +34,8 @@
       no.addEventListener('click', function () { close(null); });
       f.addEventListener('submit', function (e) {
         e.preventDefault();
-        if (name.value.trim().length < 2 || !st.value || !/^[1-9][0-9]{5}$/.test(pin.value.trim())) { pin.reportValidity(); return; }
-        close({ name: name.value.trim(), state: st.value, pin: pin.value.trim(), address: addr.value.trim() });
+        if (name.value.trim().length < 2 || !st.value || !/^[1-9][0-9]{5}$/.test(pin.value.trim()) || !/^[6-9][0-9]{9}$/.test(mob.value.replace(/[\s-]/g, '').replace(/^(\+91|91|0)(?=[6-9][0-9]{9}$)/, ''))) { mob.setCustomValidity(''); alert_('Please enter a valid name, 10-digit mobile number, state and 6-digit pincode.'); return; }
+        close({ name: name.value.trim(), state: st.value, pin: pin.value.trim(), address: addr.value.trim(), mobile: mob.value.trim() });
       });
     });
   }
@@ -60,7 +64,7 @@
       var res = await fetch(C.SUPABASE_URL + '/functions/v1/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token, 'apikey': C.SUPABASE_ANON_KEY },
-        body: JSON.stringify({ book_slug: SLUG, customer_name: det.name, customer_state: det.state, customer_pincode: det.pin, customer_address: det.address })
+        body: JSON.stringify({ book_slug: SLUG, customer_name: det.name, customer_state: det.state, customer_pincode: det.pin, customer_address: det.address, customer_mobile: det.mobile })
       });
       var d = await res.json();
       if (d.already) { location.href = B.read; return; }
@@ -69,7 +73,7 @@
       var rz = new window.Razorpay({
         key: d.key_id, amount: d.amount, currency: 'INR', order_id: d.order_id,
         name: 'Valarodigital', description: B.label + ' (online access)',
-        prefill: { email: session.user.email }, theme: { color: '#ff6a2b' },
+        prefill: { email: session.user.email, contact: det.mobile, name: det.name }, theme: { color: '#ff6a2b' },
         handler: function () { waitForAccess(session.user.id); },
         modal: { ondismiss: function () { btn.disabled = false; say(''); } }
       });

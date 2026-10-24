@@ -21,7 +21,7 @@ Deno.serve(async (req) => {
     const { data: u, error: ue } = await admin.auth.getUser(jwt);
     if (ue || !u.user) return json({ error: "not signed in" }, 401);
 
-    const { book_slug, customer_name, customer_state, customer_pincode, customer_address } = await req.json();
+    const { book_slug, customer_name, customer_state, customer_pincode, customer_address, customer_mobile } = await req.json();
     const base = BOOKS[book_slug];
     if (!base) return json({ error: "unknown book" }, 400);
     const name = String(customer_name ?? "").trim().slice(0, 100);
@@ -29,6 +29,8 @@ Deno.serve(async (req) => {
     if (!STATES.includes(customer_state)) return json({ error: "state required" }, 400);
     const pin = String(customer_pincode ?? "").trim();
     if (!/^[1-9][0-9]{5}$/.test(pin)) return json({ error: "pincode required" }, 400);
+    const mobile = String(customer_mobile ?? "").replace(/[\s-]/g, "").replace(/^(\+91|91|0)(?=[6-9][0-9]{9}$)/, "");
+    if (!/^[6-9][0-9]{9}$/.test(mobile)) return json({ error: "mobile required" }, 400);
     const addr = String(customer_address ?? "").trim().slice(0, 300) || null; // optional
     const tax = Math.round((base * GST_PERCENT) / 100);
     const amount = base + tax; // total charged, in paise
@@ -48,7 +50,7 @@ Deno.serve(async (req) => {
     const o = await r.json();
     if (!r.ok) return json({ error: "razorpay" }, 502);
 
-    await admin.from("orders").insert({ user_id: u.user.id, book_slug, razorpay_order_id: o.id, amount, base_amount: base, cgst, sgst, igst, customer_name: name, customer_state, customer_pincode: pin, customer_address: addr, customer_email: u.user.email });
+    await admin.from("orders").insert({ user_id: u.user.id, book_slug, razorpay_order_id: o.id, amount, base_amount: base, cgst, sgst, igst, customer_name: name, customer_state, customer_pincode: pin, customer_address: addr, customer_mobile: mobile, customer_email: u.user.email });
     return json({ order_id: o.id, amount, key_id: keyId });
   } catch (_e) {
     return json({ error: "server" }, 500);
