@@ -4,6 +4,7 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 // Base prices in paise, fixed on the server. Rs 299 and Rs 199, plus GST added at checkout.
 const GST_PERCENT = 18;
 const BOOKS: Record<string, number> = { "ai-agents-tamil": 29900, "claude-code-commands-ta": 19900 };
+const STATES = ["Andaman and Nicobar Islands","Andhra Pradesh","Arunachal Pradesh","Assam","Bihar","Chandigarh","Chhattisgarh","Dadra and Nagar Haveli and Daman and Diu","Delhi","Goa","Gujarat","Haryana","Himachal Pradesh","Jammu and Kashmir","Jharkhand","Karnataka","Kerala","Ladakh","Lakshadweep","Madhya Pradesh","Maharashtra","Manipur","Meghalaya","Mizoram","Nagaland","Odisha","Puducherry","Punjab","Rajasthan","Sikkim","Tamil Nadu","Telangana","Tripura","Uttar Pradesh","Uttarakhand","West Bengal"];
 const cors = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, apikey, content-type",
@@ -20,11 +21,19 @@ Deno.serve(async (req) => {
     const { data: u, error: ue } = await admin.auth.getUser(jwt);
     if (ue || !u.user) return json({ error: "not signed in" }, 401);
 
-    const { book_slug } = await req.json();
+    const { book_slug, customer_name, customer_state, customer_pincode } = await req.json();
     const base = BOOKS[book_slug];
     if (!base) return json({ error: "unknown book" }, 400);
+    const name = String(customer_name ?? "").trim().slice(0, 100);
+    if (name.length < 2) return json({ error: "name required" }, 400);
+    if (!STATES.includes(customer_state)) return json({ error: "state required" }, 400);
+    const pin = String(customer_pincode ?? "").trim();
+    if (!/^[1-9][0-9]{5}$/.test(pin)) return json({ error: "pincode required" }, 400);
     const tax = Math.round((base * GST_PERCENT) / 100);
     const amount = base + tax; // total charged, in paise
+    // Same state as the seller (Tamil Nadu): CGST + SGST. Any other state: IGST.
+    const intra = customer_state === "Tamil Nadu";
+    const cgst = intra ? Math.floor(tax / 2) : 0, sgst = intra ? tax - cgst : 0, igst = intra ? 0 : tax;
 
     const { data: own } = await admin.from("entitlements").select("book_slug").eq("user_id", u.user.id).eq("book_slug", book_slug).maybeSingle();
     if (own) return json({ already: true });
@@ -38,7 +47,7 @@ Deno.serve(async (req) => {
     const o = await r.json();
     if (!r.ok) return json({ error: "razorpay" }, 502);
 
-    await admin.from("orders").insert({ user_id: u.user.id, book_slug, razorpay_order_id: o.id, amount });
+    await admin.from("orders").insert({ user_id: u.user.id, book_slug, razorpay_order_id: o.id, amount, base_amount: base, cgst, sgst, igst, customer_name: name, customer_state, customer_pincode: pin, customer_email: u.user.email });
     return json({ order_id: o.id, amount, key_id: keyId });
   } catch (_e) {
     return json({ error: "server" }, 500);

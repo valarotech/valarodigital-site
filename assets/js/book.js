@@ -4,6 +4,35 @@
   var SLUG = btn.getAttribute('data-book') || C.BOOK_SLUG, B = C.BOOKS[SLUG];
   var note = document.getElementById('buy-note'), label = btn.querySelector('.lbl');
   function say(t, bad) { note.textContent = t; note.style.color = bad ? '#ffb4a2' : ''; }
+  var STATES = ["Andaman and Nicobar Islands","Andhra Pradesh","Arunachal Pradesh","Assam","Bihar","Chandigarh","Chhattisgarh","Dadra and Nagar Haveli and Daman and Diu","Delhi","Goa","Gujarat","Haryana","Himachal Pradesh","Jammu and Kashmir","Jharkhand","Karnataka","Kerala","Ladakh","Lakshadweep","Madhya Pradesh","Maharashtra","Manipur","Meghalaya","Mizoram","Nagaland","Odisha","Puducherry","Punjab","Rajasthan","Sikkim","Tamil Nadu","Telangana","Tripura","Uttar Pradesh","Uttarakhand","West Bengal"];
+  // Billing details for the GST invoice: name, state, pincode.
+  function askDetails() {
+    return new Promise(function (resolve) {
+      var ov = document.createElement('div'); ov.className = 'bill-ov';
+      var f = document.createElement('form'); f.className = 'bill-box';
+      function h(tag, txt, cls) { var e = document.createElement(tag); if (txt) e.textContent = txt; if (cls) e.className = cls; return e; }
+      f.appendChild(h('h3', 'Billing details'));
+      f.appendChild(h('p', 'These go on your GST invoice. We email the invoice to ' + (window.__vdEmail || 'your email') + '.', 'bill-sub'));
+      var l1 = h('label', 'Full name'), name = document.createElement('input');
+      name.type = 'text'; name.required = true; name.maxLength = 100; name.autocomplete = 'name'; l1.appendChild(name); f.appendChild(l1);
+      var l2 = h('label', 'State'), st = document.createElement('select'); st.required = true;
+      var o0 = document.createElement('option'); o0.value = ''; o0.textContent = 'Select state'; st.appendChild(o0);
+      STATES.forEach(function (x) { var o = document.createElement('option'); o.value = x; o.textContent = x; st.appendChild(o); });
+      l2.appendChild(st); f.appendChild(l2);
+      var l3 = h('label', 'Pincode'), pin = document.createElement('input');
+      pin.type = 'text'; pin.required = true; pin.inputMode = 'numeric'; pin.maxLength = 6; pin.pattern = '[1-9][0-9]{5}'; pin.autocomplete = 'postal-code'; l3.appendChild(pin); f.appendChild(l3);
+      var row = h('div', '', 'bill-row'), go = h('button', 'Continue to payment', 'btn btn-primary'), no = h('button', 'Cancel', 'btn btn-ghost');
+      go.type = 'submit'; no.type = 'button'; row.appendChild(go); row.appendChild(no); f.appendChild(row);
+      ov.appendChild(f); document.body.appendChild(ov); name.focus();
+      function close(v) { document.body.removeChild(ov); resolve(v); }
+      no.addEventListener('click', function () { close(null); });
+      f.addEventListener('submit', function (e) {
+        e.preventDefault();
+        if (name.value.trim().length < 2 || !st.value || !/^[1-9][0-9]{5}$/.test(pin.value.trim())) { pin.reportValidity(); return; }
+        close({ name: name.value.trim(), state: st.value, pin: pin.value.trim() });
+      });
+    });
+  }
   function loadRzp() {
     return new Promise(function (ok, no) {
       if (window.Razorpay) return ok();
@@ -21,12 +50,15 @@
     btn.disabled = false;
   }
   async function buy(session) {
+    window.__vdEmail = session.user.email;
+    var det = await askDetails();
+    if (!det) { say(''); return; }
     btn.disabled = true; say('Starting payment…');
     try {
       var res = await fetch(C.SUPABASE_URL + '/functions/v1/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token, 'apikey': C.SUPABASE_ANON_KEY },
-        body: JSON.stringify({ book_slug: SLUG })
+        body: JSON.stringify({ book_slug: SLUG, customer_name: det.name, customer_state: det.state, customer_pincode: det.pin })
       });
       var d = await res.json();
       if (d.already) { location.href = B.read; return; }
