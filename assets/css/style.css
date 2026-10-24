@@ -424,3 +424,5 @@ body.rd-hidden .rd-cover { display: flex; }
 .bill-box textarea{padding:10px;border:1px solid #bbb;border-radius:8px;font-size:1rem;font-family:inherit;resize:vertical}
 
 .bill-err{margin:0;color:#b42318;font-size:.86rem}
+
+.bill-email-note{color:#0b5;font-weight:600}

@@ -18,13 +18,19 @@
       f.appendChild(h('p', 'These go on your GST invoice.', 'bill-sub'));
       var name = field('Full name', inp('text', { maxLength: 100, autocomplete: 'name' }));
       var email = field('Email', inp('email', { maxLength: 200, autocomplete: 'email', inputMode: 'email' }));
+      var enote = h('p', '', 'bill-sub bill-email-note'); f.appendChild(enote);
+      function showNote() {
+        var v = email.value.trim();
+        enote.textContent = v ? 'Your login code and invoice will be sent to: ' + v + '. Please check that it is correct.' : 'Your login code and invoice will be sent to the email you enter here.';
+      }
+      email.addEventListener('input', showNote);
       var email2 = null;
       if (session) { email.value = session.user.email; email.readOnly = true; }
       else {
         email2 = field('Confirm email', inp('email', { maxLength: 200, autocomplete: 'off', inputMode: 'email' }));
         email2.addEventListener('paste', function (e) { e.preventDefault(); });
       }
-      f.appendChild(h('p', 'Your login code and invoice will be sent to this email. Please check it carefully.', 'bill-sub'));
+      showNote();
       var mob = field('Mobile number', inp('tel', { maxLength: 14, autocomplete: 'tel', inputMode: 'numeric' }));
       var st = document.createElement('select'); var o0 = document.createElement('option'); o0.value = ''; o0.textContent = 'Select state'; st.appendChild(o0);
       STATES.forEach(function (x) { var o = document.createElement('option'); o.value = x; o.textContent = x; st.appendChild(o); });
