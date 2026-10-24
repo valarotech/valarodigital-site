@@ -58,7 +58,8 @@ Deno.serve(async (req) => {
     let o = { ...order, razorpay_payment_id: pay?.id ?? order.razorpay_payment_id };
     if (!o.invoice_no) {
       const now = new Date().toISOString();
-      const { data: no } = await admin.rpc("next_invoice_no", { p_date: now });
+      const { data: no, error: ne } = await admin.rpc("next_invoice_no", { p_date: now });
+      if (ne || !no) throw new Error("invoice number failed: " + (ne?.message ?? "empty"));
       const base = o.base_amount ?? Math.round(o.amount / 1.18);
       const tax = o.amount - base;
       const intra = !o.customer_state || o.customer_state === "Tamil Nadu";
