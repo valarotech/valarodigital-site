@@ -23,7 +23,7 @@ h1{font-size:20px;margin:0 0 4px}table{width:100%;border-collapse:collapse;margi
 <h1>TAX INVOICE</h1><div class="m">Original for recipient</div>
 <div class="two" style="margin-top:14px"><div><b>${esc(b.trade_name)}</b><br>(Legal name: ${esc(b.legal_name)}, Proprietor)<br>${esc(b.address)}<br>GSTIN: ${esc(b.gstin)}<br>${esc(b.email)} | ${esc(b.phone)}</div>
 <div><b>Invoice No:</b> ${esc(o.invoice_no)}<br><b>Invoice Date:</b> ${esc(date)}<br><b>Payment ID:</b> ${esc(o.razorpay_payment_id)}<br><b>Reverse charge:</b> No</div></div>
-<div style="margin-top:14px"><b>Billed to:</b> ${esc(o.customer_name)}<br>${esc(o.customer_email)}<br><b>Place of supply:</b> ${esc(o.customer_state)}${o.customer_pincode ? " - " + esc(o.customer_pincode) : ""}</div>
+<div style="margin-top:14px"><b>Billed to:</b> ${esc(o.customer_name)}<br>${o.customer_address ? esc(o.customer_address) + "<br>" : ""}${esc(o.customer_email)}<br><b>Place of supply:</b> ${esc(o.customer_state)}${o.customer_pincode ? " - " + esc(o.customer_pincode) : ""}</div>
 <table><tr><th>Description</th><th>SAC</th><th class="r">Taxable value (INR)</th></tr>
 <tr><td>${esc(TITLES[o.book_slug] ?? o.book_slug)}<div class="m">${esc(b.sac_desc)}</div></td><td>${esc(b.sac_code)}</td><td class="r">${rs(o.base_amount)}</td></tr></table>
 <table><tr><td>Taxable value</td><td class="r">${rs(o.base_amount)}</td></tr>${taxRows}<tr><td><b>Total (INR)</b></td><td class="r"><b>${rs(o.amount)}</b></td></tr></table>

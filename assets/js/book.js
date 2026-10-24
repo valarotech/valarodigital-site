@@ -21,6 +21,8 @@
       l2.appendChild(st); f.appendChild(l2);
       var l3 = h('label', 'Pincode'), pin = document.createElement('input');
       pin.type = 'text'; pin.required = true; pin.inputMode = 'numeric'; pin.maxLength = 6; pin.pattern = '[1-9][0-9]{5}'; pin.autocomplete = 'postal-code'; l3.appendChild(pin); f.appendChild(l3);
+      var l4 = h('label', 'Address (optional)'), addr = document.createElement('textarea');
+      addr.rows = 2; addr.maxLength = 300; addr.autocomplete = 'street-address'; l4.appendChild(addr); f.appendChild(l4);
       var row = h('div', '', 'bill-row'), go = h('button', 'Continue to payment', 'btn btn-primary'), no = h('button', 'Cancel', 'btn btn-ghost');
       go.type = 'submit'; no.type = 'button'; row.appendChild(go); row.appendChild(no); f.appendChild(row);
       ov.appendChild(f); document.body.appendChild(ov); name.focus();
@@ -29,7 +31,7 @@
       f.addEventListener('submit', function (e) {
         e.preventDefault();
         if (name.value.trim().length < 2 || !st.value || !/^[1-9][0-9]{5}$/.test(pin.value.trim())) { pin.reportValidity(); return; }
-        close({ name: name.value.trim(), state: st.value, pin: pin.value.trim() });
+        close({ name: name.value.trim(), state: st.value, pin: pin.value.trim(), address: addr.value.trim() });
       });
     });
   }
@@ -58,7 +60,7 @@
       var res = await fetch(C.SUPABASE_URL + '/functions/v1/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token, 'apikey': C.SUPABASE_ANON_KEY },
-        body: JSON.stringify({ book_slug: SLUG, customer_name: det.name, customer_state: det.state, customer_pincode: det.pin })
+        body: JSON.stringify({ book_slug: SLUG, customer_name: det.name, customer_state: det.state, customer_pincode: det.pin, customer_address: det.address })
       });
       var d = await res.json();
       if (d.already) { location.href = B.read; return; }
