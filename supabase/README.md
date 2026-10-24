@@ -2,7 +2,6 @@
 
 Secrets (Razorpay Key Secret, webhook secret) live ONLY in Supabase -> Edge Functions -> Secrets. Never commit them.
 
-1. SQL Editor: run `schema.sql`, then the content files: `seed_book_text.sql`, `seed_book_images.sql` (the AI agents book) and `seed_guide_text.sql`, `seed_guide_images_1.sql`, `_2.sql`, `_3.sql` (the Claude Code commands guide, Rs 199).
 2. Authentication -> Email Templates -> "Magic Link": make the body show the code: `Your code is {{ .Token }}`.
 3. Authentication -> URL Configuration: Site URL `https://valarodigital.com`.
 4. Authentication -> SMTP: add a real SMTP sender. The built-in one allows only a few emails per hour.
