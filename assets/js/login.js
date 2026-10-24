@@ -13,7 +13,14 @@
   async function send() {
     msg('Sending code…');
     var r = await sb.auth.signInWithOtp({ email: email, options: { shouldCreateUser: true } });
-    if (r.error) { msg('Could not send the code. Please check the email and try again in a minute.', true); return false; }
+    if (r.error) {
+      var m = String(r.error.message || ''), st = r.error.status;
+      if (st === 429 || /rate|seconds|too many|limit/i.test(m)) msg('A code was requested a moment ago. Please wait one minute, then press the button again. Check your inbox and spam folder for the earlier code.', true);
+      else if (/invalid/i.test(m) && /email/i.test(m)) msg('That email address does not look right. Please check it and try again.', true);
+      else msg('We could not send the code right now. Please try again in a few minutes, or WhatsApp us on +91 79049 31067.', true);
+      if (window.console) console.warn('otp error', st, m);
+      return false;
+    }
     msg('We sent a 6-digit code to ' + email + '. It can take a minute. Check spam too.');
     return true;
   }
