@@ -75,7 +75,7 @@
       b.type = 'button'; b.textContent = ch.title + (ch.is_sample && !owned ? '  (free sample)' : ''); b.addEventListener('click', function () { go(i); });
       li.appendChild(b); $('toc').appendChild(li);
     });
-    if (!owned) { $('lockbuy').href = B.url + '?buy=1'; $('lockbuy').textContent = 'Buy the full book \u20b9' + B.price; $('lock').hidden = false; }
+    if (!owned) { $('lockbuy').href = B.url + '?buy=1'; $('lockbuy').textContent = 'Buy full access \u20b9' + B.price + ' + tax'; $('lock').hidden = false; }
     go(0);
   }
   $('prev').addEventListener('click', function () { go(cur - 1); });
