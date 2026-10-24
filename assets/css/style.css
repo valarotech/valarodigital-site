@@ -355,3 +355,51 @@ p { margin: 0 0 1em; }
   .book-details { grid-template-columns: minmax(0, 1fr); gap: 2px; }
   .book-details dd { margin-bottom: 12px; }
 }
+
+/* ---------- Sign-in + online reader ---------- */
+.auth-wrap { padding: 56px 0 72px; background: var(--soft); }
+.auth-card { max-width: 440px; margin: 0 auto; background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 32px 28px; box-shadow: 0 20px 50px -30px rgba(11,21,48,.3); }
+.auth-card h1 { font-size: 1.7rem; margin: 0 0 .3em; }
+.auth-sub { color: var(--muted); margin: 0 0 1.2em; }
+.auth-card .form { display: grid; gap: 14px; }
+.auth-card .form[hidden] { display: none; }
+.auth-card label { display: grid; gap: 6px; font-weight: 600; font-size: .92rem; }
+.auth-card .btn { width: 100%; justify-content: center; }
+.auth-links { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.linkbtn { background: none; border: 0; padding: 0; font: inherit; font-size: .9rem; color: var(--orange); text-decoration: underline; cursor: pointer; }
+.linkbtn:disabled { color: var(--muted); text-decoration: none; cursor: default; }
+.auth-msg { min-height: 1.4em; margin: 14px 0 0; font-size: .92rem; color: var(--muted); }
+.auth-msg.bad { color: #b42318; }
+.auth-fine { font-size: .82rem; color: var(--muted); margin: 18px 0 0; }
+.auth-fine a { text-decoration: underline; }
+
+body.reader { background: #fbf9f4; color: #1d2433; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+.rd-bar { position: sticky; top: 0; z-index: 20; display: flex; align-items: center; gap: 14px; padding: 10px 16px; background: var(--navy); color: #fff; }
+.rd-title { font-family: var(--font-head); font-weight: 700; margin-right: auto; }
+.rd-who { font-size: .82rem; color: rgba(255,255,255,.7); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 40vw; }
+.rd-btn { background: rgba(255,255,255,.12); color: #fff; border: 0; border-radius: 8px; padding: 8px 12px; font: inherit; font-size: .88rem; cursor: pointer; }
+.rd-body { display: grid; grid-template-columns: 280px minmax(0, 1fr); max-width: 1100px; margin: 0 auto; }
+.rd-side { border-right: 1px solid var(--line); padding: 20px 12px; position: sticky; top: 52px; align-self: start; max-height: calc(100vh - 52px); overflow: auto; }
+.rd-side ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.rd-side button { width: 100%; text-align: left; background: none; border: 0; padding: 9px 12px; border-radius: 8px; font: inherit; font-size: .92rem; color: inherit; cursor: pointer; }
+.rd-side button.on { background: #fff1e8; color: var(--orange); font-weight: 600; }
+.rd-main { padding: 28px 28px 80px; min-width: 0; }
+.rd-lock { background: #fff1bd; border-radius: 12px; padding: 14px 18px; margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: space-between; }
+.rd-lock[hidden] { display: none; }
+.rd-page { font-family: "Noto Sans Tamil", var(--font); font-size: 1.12rem; line-height: 1.95; max-width: 680px; }
+.rd-page h1 { font-size: 1.7rem; line-height: 1.4; } .rd-page h2 { font-size: 1.28rem; margin-top: 1.6em; }
+.rd-nav { display: flex; align-items: center; justify-content: space-between; max-width: 680px; margin-top: 40px; }
+.rd-wm { position: fixed; inset: 0; z-index: 10; pointer-events: none; background-repeat: repeat; }
+.rd-cover { position: fixed; inset: 0; z-index: 50; background: var(--navy); color: #fff; display: none; align-items: center; justify-content: center; text-align: center; padding: 24px; }
+body.rd-hidden .rd-cover { display: flex; }
+@media print { body.reader * { display: none !important; } }
+@media (max-width: 820px) {
+  .rd-body { grid-template-columns: minmax(0, 1fr); }
+  .rd-side { display: none; position: fixed; inset: 52px 0 0 0; z-index: 30; background: #fff; max-height: none; border: 0; }
+  .rd-side.open { display: block; }
+  .rd-main { padding: 20px 16px 80px; } .rd-who { display: none; }
+}
+.rd-nav .btn-ghost { color: var(--navy); border-color: var(--line); background: #fff; backdrop-filter: none; }
+.rd-nav .btn-ghost:disabled { opacity: .4; }
+.auth-card .form { box-shadow: none; border: 0; padding: 0; background: none; }
+@media (min-width: 821px) { #menu { display: none; } }

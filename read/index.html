@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Read | Valarodigital</title>
+  <meta name="description" content="Your online reader.">
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#0b1530">
+  <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Sora:wght@600;700;800&amp;family=Noto+Sans+Tamil:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="reader">
+  <header class="rd-bar">
+    <button id="menu" class="rd-btn" type="button" aria-label="Chapters">&#9776; Chapters</button>
+    <a class="rd-title" href="/books/ai-agents-tamil/">Valarodigital</a>
+    <span class="rd-who" id="who"></span>
+    <button id="out" class="rd-btn" type="button">Sign out</button>
+  </header>
+  <div class="rd-body">
+    <nav id="sidebar" class="rd-side" aria-label="Chapters"><ol id="toc"></ol></nav>
+    <main class="rd-main">
+      <div id="lock" class="rd-lock" hidden>You are reading the free sample. <a class="btn btn-primary" href="/books/ai-agents-tamil/?buy=1">Buy the full book &#8377;299</a></div>
+      <article id="page" class="rd-page" lang="ta">Loading…</article>
+      <div class="rd-nav"><button id="prev" class="btn btn-ghost" type="button">&larr; Previous</button><span id="pos"></span><button id="next" class="btn btn-ghost" type="button">Next &rarr;</button></div>
+    </main>
+  </div>
+  <div id="wm" class="rd-wm" aria-hidden="true"></div>
+  <div class="rd-cover" aria-hidden="true">Reading paused. Come back to this tab to continue.</div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script src="/assets/js/config.js"></script>
+  <script src="/assets/js/auth.js"></script>
+<script src="/assets/js/reader.js"></script>
+</body>
+</html>

@@ -94,10 +94,9 @@
       <div class="book-meta"><span>By P.Karthikeyan</span><span>&middot;</span><span lang="ta">அக்டோபர் 2026</span><span>&middot;</span><span>75 pages</span><span>&middot;</span><span>Read online</span></div>
       <div class="book-buy">
         <span class="book-price">&#8377;299 <small class="price-tax">+ tax extra</small></span>
-        <!-- TODO(owner): when the payment link exists, replace href with it and change the label to "Buy now". -->
-        <a class="btn btn-primary btn-lg" id="buy-btn" href="https://wa.me/917904931067?text=Hi%20Valarodigital%2C%20please%20tell%20me%20when%20the%20Tamil%20AI%20Agents%20book%20is%20available." target="_blank" rel="noopener"><svg class="ic"><use href="#i-wa"/></svg>Notify me when it's on sale</a>
+        <a class="btn btn-primary btn-lg" id="buy-btn" href="/login/?next=%2Fbooks%2Fai-agents-tamil%2F%3Fbuy%3D1"><span class="lbl">Buy now</span></a>
       </div>
-      <p class="book-note">Online payment and sign-in are not switched on yet. Message us on WhatsApp and we will tell you as soon as the book can be bought here. The book is read online in your account. There is no file to download.</p>
+      <p class="book-note" id="buy-note">Pay online, then read it in your account. No file to download. <a href="/login/?next=%2Fread%2F" style="text-decoration:underline">Already bought? Sign in</a>.</p>
     </div>
   </div>
 </section>
@@ -198,5 +197,9 @@
   <a class="wa-float" href="https://wa.me/917904931067?text=Hi%20Valarodigital%2C%20I%20would%20like%20to%20know%20more%20about%20your%20services." target="_blank" rel="noopener" aria-label="Chat on WhatsApp"><svg><use href="#i-wa"/></svg></a>
 
   <script src="/assets/js/main.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script src="/assets/js/config.js"></script>
+  <script src="/assets/js/auth.js"></script>
+<script src="/assets/js/book.js"></script>
 </body>
 </html>
