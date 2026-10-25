@@ -13,10 +13,11 @@
   }
   async function send() {
     msg('Sending code…');
-    var r = await sb.auth.signInWithOtp({ email: email, options: { shouldCreateUser: true } });
+    var r = await sb.auth.signInWithOtp({ email: email, options: { shouldCreateUser: false } });
     if (r.error) {
       var m = String(r.error.message || ''), st = r.error.status;
-      if (st === 429 || /rate|seconds|too many|limit/i.test(m)) msg('A code was requested a moment ago. Please wait one minute, then press the button again. Check your inbox and spam folder for the earlier code.', true);
+      if (/signups? not allowed|not found|user.*not/i.test(m)) msg('We could not find a purchase for this email. Please use the same email you used when you bought the book. New here? Buy a book first and your login is created for you.', true);
+      else if (st === 429 || /rate|seconds|too many|limit/i.test(m)) msg('A code was requested a moment ago. Please wait one minute, then press the button again. Check your inbox and spam folder for the earlier code.', true);
       else if (/invalid/i.test(m) && /email/i.test(m)) msg('That email address does not look right. Please check it and try again.', true);
       else msg('We could not send the code right now. Please try again in a few minutes, or WhatsApp us on +91 79049 31067.', true);
       if (window.console) console.warn('otp error', st, m);
