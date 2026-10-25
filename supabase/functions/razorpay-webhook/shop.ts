@@ -9,9 +9,6 @@ export function shopInvoiceHtml(o: any, b: any): string {
   const date = new Date(o.invoice_date).toLocaleDateString("en-GB", { timeZone: "Asia/Kolkata" }).replace(/\//g, "-");
   const intra = o.igst === 0;
   const code = CODES[o.customer_state] ?? "";
-  const head = intra
-    ? `<th class="r">CGST %</th><th class="r">CGST Amt</th><th class="r">SGST %</th><th class="r">SGST Amt</th>`
-    : `<th class="r">IGST %</th><th class="r">IGST Amt</th>`;
   // Shipping is not shown as its own line: it is folded into the highest-rate goods line (same tax as before, totals unchanged).
   // deno-lint-ignore no-explicit-any
   const all = (o.items as any[]).map((l) => ({ ...l }));
@@ -22,26 +19,31 @@ export function shopInvoiceHtml(o: any, b: any): string {
     t.base += ship.base; t.cgst += ship.cgst; t.sgst += ship.sgst; t.igst += ship.igst; t.incl += ship.incl;
   }
   const lines = ship && !goods.length ? all : goods;
-  const rows = lines.map((l, i) => {
-    const half = l.rate / 2;
-    const tax = intra
-      ? `<td class="r">${half}%</td><td class="r">${rs(l.cgst)}</td><td class="r">${half}%</td><td class="r">${rs(l.sgst)}</td>`
-      : `<td class="r">${l.rate}%</td><td class="r">${rs(l.igst)}</td>`;
-    return `<tr><td>${i + 1}</td><td>${esc(l.name)}</td><td>${esc(l.hsn)}</td><td class="r">${l.qty}</td><td class="r">${rs(Math.round(l.base / l.qty))}</td><td class="r">${rs(l.base)}</td>${tax}<td class="r">${rs(l.incl)}</td></tr>`;
+  // Same layout as the courier-style bills the shop owner is used to: Item, Qty, Rate (before tax), GST %, Amount (before tax), then Sub Total, SGST, CGST, Total Net Amount.
+  const rows = lines.map((l, i) =>
+    `<tr><td>${i + 1}</td><td>${esc(l.name)}</td><td class="r">${l.qty}</td><td class="r">${rs(Math.round(l.base / l.qty))}</td><td class="r">${l.rate}</td><td class="r">${rs(l.base)}</td></tr>`
+  ).join("");
+  // Tax per rate (usually one rate). Labels carry the rate only when the cart mixes rates.
+  const byRate: Record<number, { cgst: number; sgst: number; igst: number }> = {};
+  for (const l of lines) { const t = (byRate[l.rate] ??= { cgst: 0, sgst: 0, igst: 0 }); t.cgst += l.cgst; t.sgst += l.sgst; t.igst += l.igst; }
+  const many = Object.keys(byRate).length > 1;
+  const taxRows = Object.keys(byRate).map(Number).sort((x, y) => x - y).map((r) => {
+    const t = byRate[r], lab = (n: string, p: number) => n + (many ? ` (${p}%)` : "");
+    return intra
+      ? `<tr><td>${lab("SGST", r / 2)}</td><td class="r">${rs(t.sgst)}</td></tr><tr><td>${lab("CGST", r / 2)}</td><td class="r">${rs(t.cgst)}</td></tr>`
+      : `<tr><td>${lab("IGST", r)}</td><td class="r">${rs(t.igst)}</td></tr>`;
   }).join("");
-  const taxRows = intra
-    ? `<tr><td>CGST</td><td class="r">${rs(o.cgst)}</td></tr><tr><td>SGST</td><td class="r">${rs(o.sgst)}</td></tr>`
-    : `<tr><td>IGST</td><td class="r">${rs(o.igst)}</td></tr>`;
+  const mob = o.customer_mobile ? `<br>Cell No: ${esc(o.customer_mobile)}` : "";
   return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Tax Invoice ${esc(o.invoice_no)}</title>
-<style>body{font-family:Arial,Helvetica,sans-serif;color:#111;margin:0;padding:24px;font-size:13px}.box{max-width:820px;margin:0 auto;border:1px solid #bbb;padding:22px}
-h1{font-size:26px;margin:0;text-align:right;letter-spacing:.5px}table{width:100%;border-collapse:collapse;margin-top:14px}td,th{padding:7px 8px;border:1px solid #ddd;text-align:left;vertical-align:top}th{background:#f4f4f4;font-size:12px}.r{text-align:right}.m{color:#555;font-size:12px}.two{display:flex;gap:24px;flex-wrap:wrap}.two>div{flex:1;min-width:240px}.tot{width:55%;margin-left:auto}.tot td{border:0;border-bottom:1px solid #ddd}.sc{overflow-x:auto}</style></head><body><div class="box">
-<div class="two"><div><b style="font-size:17px">${esc(b.trade_name)}</b><br>${esc(b.display_address ?? "Tamil Nadu, India")}<br>GSTIN: ${esc(b.gstin)}<br>${esc(b.email)}</div><div><h1>TAX INVOICE</h1><div class="m r">Original for recipient</div></div></div>
-<table><tr><td><b>Invoice No:</b> ${esc(o.invoice_no)}<br><b>Invoice Date:</b> ${esc(date)}<br><b>Payment ID:</b> ${esc(o.razorpay_payment_id)}</td><td><b>Place of supply:</b> ${esc(o.customer_state)}${code ? " (" + code + ")" : ""}<br><b>Terms:</b> Paid online<br><b>Reverse charge:</b> No</td></tr></table>
-<table><tr><td><b>Bill to / Ship to</b><br><b>${esc(o.customer_name)}</b><br>${esc(o.ship_address)}<br>${esc(o.customer_state)} - ${esc(o.customer_pincode)}<br>${esc(o.customer_email)}</td></tr></table>
-<div class="sc"><table><tr><th>#</th><th>Item &amp; description</th><th>HSN/SAC</th><th class="r">Qty</th><th class="r">Rate</th><th class="r">Taxable value</th>${head}<th class="r">Total</th></tr>${rows}</table></div>
-<table class="tot"><tr><td>Taxable value</td><td class="r">${rs(o.base_total)}</td></tr>${taxRows}<tr><td><b>Total (INR)</b></td><td class="r"><b>${rs(o.amount)}</b></td></tr><tr><td>Payment made</td><td class="r">(-) ${rs(o.amount)}</td></tr><tr><td><b>Balance due</b></td><td class="r"><b>0.00</b></td></tr></table>
-<p style="margin-top:14px"><b>Total in words:</b> <i>${esc(inWords(o.amount))}</i></p>
-<p class="m" style="margin-top:12px">Prices include GST. This is a computer generated invoice and does not require a signature. Returns and refunds as per the policy on our website.</p>
+<style>body{font-family:Arial,Helvetica,sans-serif;color:#111;margin:0;padding:24px;font-size:13px}.box{max-width:720px;margin:0 auto;border:1px solid #bbb;padding:22px}
+h1{font-size:24px;margin:0;text-align:right;letter-spacing:.5px}table{width:100%;border-collapse:collapse;margin-top:14px}.items td,.items th{padding:7px 8px;border-top:1px solid #333;border-bottom:1px solid #333;text-align:left;vertical-align:top}.items th{font-size:12px}.r{text-align:right}.m{color:#555;font-size:12px}.two{display:flex;gap:24px;flex-wrap:wrap}.two>div{flex:1;min-width:240px}.tot{width:55%;margin-left:auto}.tot td{padding:5px 8px}.net td{font-size:16px;font-weight:bold;border-top:1px solid #333;border-bottom:1px solid #333}.sc{overflow-x:auto}</style></head><body><div class="box">
+<div class="two"><div><u><i>To Delivery Address:</i></u><br><b>${esc(o.customer_name)}</b><br>${esc(o.ship_address)}<br>${esc(o.customer_state)} - ${esc(o.customer_pincode)}${mob}<br>${esc(o.customer_email)}</div><div><h1>TAX INVOICE</h1><div class="r">Invoice No: <b>${esc(o.invoice_no)}</b><br>Date: ${esc(date)}<br>Place of supply: ${esc(o.customer_state)}${code ? " (" + code + ")" : ""}<br>Paid online: ${esc(o.razorpay_payment_id)}</div></div></div>
+<div class="sc"><table class="items"><tr><th>S.No</th><th>Item Details</th><th class="r">Qty</th><th class="r">Rate</th><th class="r">GST %</th><th class="r">Amount</th></tr>${rows}</table></div>
+<table class="tot"><tr><td>Sub Total</td><td class="r">${rs(o.base_total)}</td></tr>${taxRows}<tr class="net"><td>Total Net Amount</td><td class="r">${rs(o.amount)}</td></tr></table>
+<p class="m" style="margin-top:6px"><i>${esc(inWords(o.amount))}</i></p>
+<p style="margin-top:18px"><b>From Sender: ${esc(b.trade_name)}</b><br>${esc(b.display_address ?? "Tamil Nadu, India")}<br>GSTIN: ${esc(b.gstin)}<br>${esc(b.email)}</p>
+<p class="m" style="margin-top:12px">Dear Customer, thank you for shopping with us. Prices include GST and delivery. This is a computer generated invoice and does not require a signature. Returns and refunds as per the policy on our website.</p>
+<p class="r"><b>For ${esc(b.trade_name)}</b></p>
 </div></body></html>`;
 }
 
