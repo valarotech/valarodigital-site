@@ -1,6 +1,7 @@
 (function () {
   var sb = window.vdSb, $ = function (id) { return document.getElementById(id); };
-  var next = window.vdSafeNext(new URLSearchParams(location.search).get('next'));
+  var nx = new URLSearchParams(location.search).get('next');
+  var next = nx ? window.vdSafeNext(nx) : '/library/';
   var email = '', cool = null;
   function msg(t, bad) { var m = $('msg'); m.textContent = t || ''; m.className = 'auth-msg' + (bad ? ' bad' : ''); }
   function busy(b, on) { b.disabled = on; }

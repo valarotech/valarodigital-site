@@ -470,3 +470,5 @@ body.rd-hidden .rd-cover { display: flex; }
 .cover-art{top:9%;height:34%}
 .book-row-cover .ta-title{font-size:.8rem}
 .book-row-cover .en-title{font-size:.58rem}
+.lib-status{color:#1a7f4b;font-weight:600}
+.site-nav a{white-space:nowrap}
