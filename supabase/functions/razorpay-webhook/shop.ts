@@ -12,8 +12,17 @@ export function shopInvoiceHtml(o: any, b: any): string {
   const head = intra
     ? `<th class="r">CGST %</th><th class="r">CGST Amt</th><th class="r">SGST %</th><th class="r">SGST Amt</th>`
     : `<th class="r">IGST %</th><th class="r">IGST Amt</th>`;
+  // Shipping is not shown as its own line: it is folded into the highest-rate goods line (same tax as before, totals unchanged).
   // deno-lint-ignore no-explicit-any
-  const rows = (o.items as any[]).map((l, i) => {
+  const all = (o.items as any[]).map((l) => ({ ...l }));
+  const ship = all.find((l) => l.id === "shipping");
+  const goods = all.filter((l) => l.id !== "shipping");
+  if (ship && goods.length) {
+    const t = goods.reduce((m, l) => (l.rate > m.rate ? l : m), goods[0]);
+    t.base += ship.base; t.cgst += ship.cgst; t.sgst += ship.sgst; t.igst += ship.igst; t.incl += ship.incl;
+  }
+  const lines = ship && !goods.length ? all : goods;
+  const rows = lines.map((l, i) => {
     const half = l.rate / 2;
     const tax = intra
       ? `<td class="r">${half}%</td><td class="r">${rs(l.cgst)}</td><td class="r">${half}%</td><td class="r">${rs(l.sgst)}</td>`
@@ -67,6 +76,7 @@ export async function handleShop(admin: any, order: any, pay: any, orderId: stri
       const lines = goods.map((l) => `- ${l.name} x ${l.qty}`).join("\n");
       await smtp.send({
         from: "Valaro Shop <hello@valarodigital.com>", to: ADMIN_EMAIL, subject: `NEW ORDER ${o.invoice_no}: Rs ${(o.amount / 100).toFixed(2)} (${o.customer_state})`,
+        html: `<div style="font-family:Arial,Helvetica,sans-serif;max-width:820px;margin:0 auto 18px;padding:16px;border:2px solid #ff6a2b;border-radius:8px;font-size:14px"><b>NEW PAID ORDER. Pack and ship.</b><br>Items: ${esc(goods.map((l) => l.name + " x " + l.qty).join(", "))}<br>Ship to: ${esc(o.customer_name)}, ${esc(o.ship_address)}, ${esc(o.customer_state)} - ${esc(o.customer_pincode)}<br>Mobile: +91 ${esc(o.customer_mobile)} | Email: ${esc(o.customer_email)}<br>Print the invoice below and put it in the parcel.</div>` + html,
         content: `A paid shop order needs packing.\n\nInvoice: ${o.invoice_no}\nAmount: Rs ${(o.amount / 100).toFixed(2)} (shipping Rs ${(o.shipping_paise / 100).toFixed(0)})\n\nItems:\n${lines}\n\nShip to:\n${o.customer_name}\n${o.ship_address}\n${o.customer_state} - ${o.customer_pincode}\nPhone: +91 ${o.customer_mobile}\nEmail: ${o.customer_email}\n\nRazorpay payment: ${o.razorpay_payment_id}`,
       });
       await admin.from("shop_orders").update({ admin_notified: true }).eq("razorpay_order_id", orderId);
