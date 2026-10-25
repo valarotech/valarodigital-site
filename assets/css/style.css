@@ -472,3 +472,4 @@ body.rd-hidden .rd-cover { display: flex; }
 .book-row-cover .en-title{font-size:.58rem}
 .lib-status{color:#1a7f4b;font-weight:600}
 .site-nav a{white-space:nowrap}
+.back-row{margin:18px 0 0}.back-row a{font-weight:600;color:var(--orange,#ff6a2b);text-decoration:none}.back-row a:hover{text-decoration:underline}

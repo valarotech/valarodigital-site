@@ -19,4 +19,15 @@
     var r = await window.vdSb.from('entitlements').select('book_slug').eq('book_slug', slug || C.BOOK_SLUG).eq('user_id', userId).limit(1);
     return !r.error && r.data && r.data.length > 0;
   };
+  // Signed-in readers get a way back to their library from the book pages.
+  document.addEventListener('DOMContentLoaded', function () {
+    if (location.pathname.indexOf('/books/') !== 0) return;
+    window.vdSb.auth.getSession().then(function (r) {
+      if (!(r.data && r.data.session)) return;
+      var main = document.getElementById('main'); if (!main) return;
+      var p = document.createElement('div'); p.className = 'container back-row';
+      p.innerHTML = '<a href="/library/">&larr; My books</a>';
+      main.insertBefore(p, main.firstChild);
+    }).catch(function () {});
+  });
 })();
