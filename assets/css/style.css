@@ -472,4 +472,7 @@ body.rd-hidden .rd-cover { display: flex; }
 .book-row-cover .en-title{font-size:.58rem}
 .lib-status{color:#1a7f4b;font-weight:600}
 .site-nav a{white-space:nowrap}
-.back-row{margin:18px 0 0}.back-row a{font-weight:600;color:var(--orange,#ff6a2b);text-decoration:none}.back-row a:hover{text-decoration:underline}
+.back-row{margin-block:0;padding-top:16px;padding-bottom:14px}
+.back-row a{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;background:linear-gradient(135deg,#ff6a2b,#ffb13b);color:#fff;font-weight:700;font-size:.95rem;text-decoration:none;box-shadow:0 8px 18px -8px rgba(255,106,43,.65);transition:transform .15s,box-shadow .15s}
+.back-row a:hover{transform:translateY(-1px);box-shadow:0 12px 22px -8px rgba(255,106,43,.75);text-decoration:none}
+.back-row a:focus-visible{outline:3px solid #0b1530;outline-offset:2px}
