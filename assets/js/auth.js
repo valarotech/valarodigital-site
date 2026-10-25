@@ -30,4 +30,16 @@
       main.insertBefore(p, main.firstChild);
     }).catch(function () {});
   });
+  // Signed-in visitors get a Sign out item in the main menu.
+  document.addEventListener('DOMContentLoaded', function () {
+    if (location.pathname.indexOf('/login/') === 0) return;
+    window.vdSb.auth.getSession().then(function (r) {
+      if (!(r.data && r.data.session)) return;
+      var mine = document.querySelector('#site-nav a[href="/library/"]'); if (!mine) return;
+      var li = document.createElement('li'), a = document.createElement('a');
+      a.href = '#'; a.id = 'vd-signout'; a.textContent = 'Sign out';
+      a.addEventListener('click', async function (e) { e.preventDefault(); await window.vdSb.auth.signOut(); location.href = '/'; });
+      li.appendChild(a); mine.parentNode.parentNode.insertBefore(li, mine.parentNode.nextSibling);
+    }).catch(function () {});
+  });
 })();
