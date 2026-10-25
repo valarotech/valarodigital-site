@@ -1,0 +1,80 @@
+// Shop orders (physical goods): mark paid, issue a GST tax invoice, email the buyer, and tell the shop owner what to pack.
+import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
+import { CODES, esc, inWords, rs } from "./common.ts";
+
+const ADMIN_EMAIL = "valaroenterprises@gmail.com";
+
+// deno-lint-ignore no-explicit-any
+export function shopInvoiceHtml(o: any, b: any): string {
+  const date = new Date(o.invoice_date).toLocaleDateString("en-GB", { timeZone: "Asia/Kolkata" }).replace(/\//g, "-");
+  const intra = o.igst === 0;
+  const code = CODES[o.customer_state] ?? "";
+  const head = intra
+    ? `<th class="r">CGST %</th><th class="r">CGST Amt</th><th class="r">SGST %</th><th class="r">SGST Amt</th>`
+    : `<th class="r">IGST %</th><th class="r">IGST Amt</th>`;
+  // deno-lint-ignore no-explicit-any
+  const rows = (o.items as any[]).map((l, i) => {
+    const half = l.rate / 2;
+    const tax = intra
+      ? `<td class="r">${half}%</td><td class="r">${rs(l.cgst)}</td><td class="r">${half}%</td><td class="r">${rs(l.sgst)}</td>`
+      : `<td class="r">${l.rate}%</td><td class="r">${rs(l.igst)}</td>`;
+    return `<tr><td>${i + 1}</td><td>${esc(l.name)}</td><td>${esc(l.hsn)}</td><td class="r">${l.qty}</td><td class="r">${rs(Math.round(l.base / l.qty))}</td><td class="r">${rs(l.base)}</td>${tax}<td class="r">${rs(l.incl)}</td></tr>`;
+  }).join("");
+  const taxRows = intra
+    ? `<tr><td>CGST</td><td class="r">${rs(o.cgst)}</td></tr><tr><td>SGST</td><td class="r">${rs(o.sgst)}</td></tr>`
+    : `<tr><td>IGST</td><td class="r">${rs(o.igst)}</td></tr>`;
+  return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Tax Invoice ${esc(o.invoice_no)}</title>
+<style>body{font-family:Arial,Helvetica,sans-serif;color:#111;margin:0;padding:24px;font-size:13px}.box{max-width:820px;margin:0 auto;border:1px solid #bbb;padding:22px}
+h1{font-size:26px;margin:0;text-align:right;letter-spacing:.5px}table{width:100%;border-collapse:collapse;margin-top:14px}td,th{padding:7px 8px;border:1px solid #ddd;text-align:left;vertical-align:top}th{background:#f4f4f4;font-size:12px}.r{text-align:right}.m{color:#555;font-size:12px}.two{display:flex;gap:24px;flex-wrap:wrap}.two>div{flex:1;min-width:240px}.tot{width:55%;margin-left:auto}.tot td{border:0;border-bottom:1px solid #ddd}.sc{overflow-x:auto}</style></head><body><div class="box">
+<div class="two"><div><b style="font-size:17px">${esc(b.trade_name)}</b><br>${esc(b.display_address ?? "Tamil Nadu, India")}<br>GSTIN: ${esc(b.gstin)}<br>${esc(b.email)}</div><div><h1>TAX INVOICE</h1><div class="m r">Original for recipient</div></div></div>
+<table><tr><td><b>Invoice No:</b> ${esc(o.invoice_no)}<br><b>Invoice Date:</b> ${esc(date)}<br><b>Payment ID:</b> ${esc(o.razorpay_payment_id)}</td><td><b>Place of supply:</b> ${esc(o.customer_state)}${code ? " (" + code + ")" : ""}<br><b>Terms:</b> Paid online<br><b>Reverse charge:</b> No</td></tr></table>
+<table><tr><td><b>Bill to / Ship to</b><br><b>${esc(o.customer_name)}</b><br>${esc(o.ship_address)}<br>${esc(o.customer_state)} - ${esc(o.customer_pincode)}<br>${esc(o.customer_email)}</td></tr></table>
+<div class="sc"><table><tr><th>#</th><th>Item &amp; description</th><th>HSN/SAC</th><th class="r">Qty</th><th class="r">Rate</th><th class="r">Taxable value</th>${head}<th class="r">Total</th></tr>${rows}</table></div>
+<table class="tot"><tr><td>Taxable value</td><td class="r">${rs(o.base_total)}</td></tr>${taxRows}<tr><td><b>Total (INR)</b></td><td class="r"><b>${rs(o.amount)}</b></td></tr><tr><td>Payment made</td><td class="r">(-) ${rs(o.amount)}</td></tr><tr><td><b>Balance due</b></td><td class="r"><b>0.00</b></td></tr></table>
+<p style="margin-top:14px"><b>Total in words:</b> <i>${esc(inWords(o.amount))}</i></p>
+<p class="m" style="margin-top:12px">Prices include GST. This is a computer generated invoice and does not require a signature. Returns and refunds as per the policy on our website.</p>
+</div></body></html>`;
+}
+
+// deno-lint-ignore no-explicit-any
+export async function handleShop(admin: any, order: any, pay: any, orderId: string): Promise<Response> {
+  const ok = () => new Response("ok", { status: 200 });
+  if (pay?.amount !== undefined && pay.amount !== order.amount) return new Response("amount mismatch", { status: 200 });
+  await admin.from("shop_orders").update({ status: "paid", razorpay_payment_id: pay?.id ?? order.razorpay_payment_id }).eq("razorpay_order_id", orderId);
+  try {
+    if (order.invoice_html) return ok();
+    const now = new Date().toISOString();
+    // Atomic: only the first event for this payment gets an invoice number.
+    const { data: cl, error: ne } = await admin.rpc("claim_shop_invoice_no", { p_order: orderId, p_date: now });
+    const c = Array.isArray(cl) ? cl[0] : cl;
+    if (ne || !c?.invoice_no) throw new Error("shop invoice number failed: " + (ne?.message ?? "empty"));
+    if (!c.claimed) return ok();
+    const o = { ...order, razorpay_payment_id: pay?.id ?? order.razorpay_payment_id, invoice_no: c.invoice_no, invoice_date: now };
+    const { data: prof } = await admin.from("business_profile").select("*").eq("id", 1).single();
+    const html = shopInvoiceHtml(o, prof);
+    const { data: saved } = await admin.from("shop_orders").update({ invoice_html: html }).eq("razorpay_order_id", orderId).is("invoice_html", null).select("razorpay_order_id");
+    if (!saved || !saved.length) return ok();
+
+    const pass = Deno.env.get("SMTP_PASS");
+    if (!pass) return ok();
+    const smtp = new SMTPClient({ connection: { hostname: "smtp.hostinger.com", port: 465, tls: true, auth: { username: "hello@valarodigital.com", password: pass } } });
+    try {
+      // deno-lint-ignore no-explicit-any
+      const goods = (o.items as any[]).filter((l) => l.id !== "shipping");
+      const intro = `<div style="font-family:Arial,Helvetica,sans-serif;max-width:820px;margin:0 auto 18px;padding:18px;border:1px solid #bbb;border-radius:8px;color:#111;font-size:14px"><p style="margin:0 0 10px"><b>Thank you for your order.</b> We have received your payment and will pack your parcel.</p><p style="margin:0">We will send the tracking details to this email and by WhatsApp when it ships. Your tax invoice is below.</p></div>`;
+      await smtp.send({ from: "Valaro Enterprises <hello@valarodigital.com>", to: o.customer_email, subject: `Your order is confirmed. Tax invoice ${o.invoice_no}`, content: `Thank you for your order. Your tax invoice ${o.invoice_no} is below (open it in an HTML-capable mail app).`, html: html.replace("<body>", "<body>" + intro) });
+      await admin.from("shop_orders").update({ invoice_emailed: true }).eq("razorpay_order_id", orderId);
+      const lines = goods.map((l) => `- ${l.name} x ${l.qty}`).join("\n");
+      await smtp.send({
+        from: "Valaro Shop <hello@valarodigital.com>", to: ADMIN_EMAIL, subject: `NEW ORDER ${o.invoice_no}: Rs ${(o.amount / 100).toFixed(2)} (${o.customer_state})`,
+        content: `A paid shop order needs packing.\n\nInvoice: ${o.invoice_no}\nAmount: Rs ${(o.amount / 100).toFixed(2)} (shipping Rs ${(o.shipping_paise / 100).toFixed(0)})\n\nItems:\n${lines}\n\nShip to:\n${o.customer_name}\n${o.ship_address}\n${o.customer_state} - ${o.customer_pincode}\nPhone: +91 ${o.customer_mobile}\nEmail: ${o.customer_email}\n\nRazorpay payment: ${o.razorpay_payment_id}`,
+      });
+      await admin.from("shop_orders").update({ admin_notified: true }).eq("razorpay_order_id", orderId);
+    } finally {
+      await smtp.close();
+    }
+  } catch (e) {
+    console.error("shop invoice error", e);
+  }
+  return ok();
+}
