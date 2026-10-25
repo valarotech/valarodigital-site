@@ -21,7 +21,7 @@
       var enote = h('p', '', 'bill-sub bill-email-note'); f.appendChild(enote);
       function showNote() {
         var v = email.value.trim();
-        enote.textContent = v ? 'Your login code and invoice will be sent to: ' + v + '. Please check that it is correct.' : 'Your login code and invoice will be sent to the email you enter here.';
+        enote.textContent = v ? 'Your invoice and a link to your books will be sent to: ' + v + '. Please check that it is correct.' : 'Your invoice and a link to your books will be sent to the email you enter here.';
       }
       email.addEventListener('input', showNote);
       var email2 = null;
@@ -58,36 +58,19 @@
     });
   }
 
-  // After a guest pays: send a login code to their email and ask for it.
-  function askCode(email) {
-    return new Promise(function (resolve) {
-      var ov = document.createElement('div'); ov.className = 'bill-ov';
-      var f = document.createElement('form'); f.className = 'bill-box'; f.noValidate = true;
-      function h(tag, txt, cls) { var e = document.createElement(tag); if (txt) e.textContent = txt; if (cls) e.className = cls; return e; }
-      f.appendChild(h('h3', 'Payment received'));
-      var info = h('p', 'We sent a login code to ' + email + '. Enter it to open your book.', 'bill-sub'); f.appendChild(info);
-      var l = h('label', '6-digit code'), code = document.createElement('input');
-      code.type = 'text'; code.inputMode = 'numeric'; code.maxLength = 8; code.autocomplete = 'one-time-code'; l.appendChild(code); f.appendChild(l);
-      var err = h('p', '', 'bill-err'); err.setAttribute('role', 'alert'); f.appendChild(err);
-      var row = h('div', '', 'bill-row'), go = h('button', 'Open my book', 'btn btn-primary'), rs = h('button', 'Resend code', 'btn btn-ghost');
-      go.type = 'submit'; rs.type = 'button'; row.appendChild(go); row.appendChild(rs); f.appendChild(row);
-      ov.appendChild(f); document.body.appendChild(ov); code.focus();
-      async function send() {
-        err.textContent = ''; rs.disabled = true;
-        var r = await sb.auth.signInWithOtp({ email: email, options: { shouldCreateUser: false } });
-        if (r.error) err.textContent = 'Could not send the code yet. Wait a minute and press Resend.';
-        setTimeout(function () { rs.disabled = false; }, 30000);
-      }
-      rs.addEventListener('click', send);
-      f.addEventListener('submit', async function (e) {
-        e.preventDefault(); err.textContent = ''; go.disabled = true;
-        var r = await sb.auth.verifyOtp({ email: email, token: code.value.trim(), type: 'email' });
-        go.disabled = false;
-        if (r.error || !r.data.session) { err.textContent = 'That code did not work. Check it or press Resend.'; return; }
-        document.body.removeChild(ov); resolve(r.data.session);
-      });
-      send();
-    });
+  // Simple message box with a button that opens My books. No login code is sent from here:
+  // the buyer signs in later from My books, and the code is sent at that moment.
+  function infoBox(title, text) {
+    var ov = document.createElement('div'); ov.className = 'bill-ov';
+    var f = document.createElement('div'); f.className = 'bill-box';
+    function h(tag, txt, cls) { var e = document.createElement(tag); if (txt) e.textContent = txt; if (cls) e.className = cls; return e; }
+    f.appendChild(h('h3', title));
+    f.appendChild(h('p', text, 'bill-sub'));
+    var row = h('div', '', 'bill-row'), go = h('a', 'Open My books', 'btn btn-primary'), cl = h('button', 'Close', 'btn btn-ghost');
+    go.href = '/library/'; cl.type = 'button';
+    cl.addEventListener('click', function () { document.body.removeChild(ov); });
+    row.appendChild(go); row.appendChild(cl); f.appendChild(row);
+    ov.appendChild(f); document.body.appendChild(ov);
   }
 
   var rzpPromise = null;
@@ -123,8 +106,8 @@
       var d = await res.json();
       if (d.already) {
         if (session) { location.href = B.read; return; }
-        btn.disabled = false; say('You already own this. Sending you a login code…');
-        var s0 = await askCode(det.email); await waitForAccess(s0.user.id); return;
+        btn.disabled = false; say('');
+        infoBox('You already own this', 'This email (' + det.email + ') already has this book. Open My books and sign in with this email to read it. We send the login code at that time.'); return;
       }
       if (!res.ok || !d.order_id) throw new Error(d.error || 'order');
       await rzpReady; await loadRzp();
@@ -132,10 +115,10 @@
         key: d.key_id, amount: d.amount, currency: 'INR', order_id: d.order_id,
         name: 'Valarodigital', description: B.label + ' (online access)',
         prefill: { email: det.email, contact: det.mobile, name: det.name }, theme: { color: '#ff6a2b' },
-        handler: async function () {
-          var s1 = session;
-          if (!s1) { say('Payment received. Check your email for the login code.'); s1 = await askCode(det.email); }
-          waitForAccess(s1.user.id);
+        handler: function () {
+          if (session) { waitForAccess(session.user.id); return; }
+          btn.disabled = false; say('Payment received. Thank you!');
+          infoBox('Payment received', 'Thank you! We are emailing your tax invoice and a link to My books to ' + det.email + '. To read, open My books and sign in with this email. We will send you a login code at that time. Check spam if the email is late.');
         },
         modal: { ondismiss: function () { btn.disabled = false; say(''); } }
       });

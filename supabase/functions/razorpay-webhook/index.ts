@@ -81,8 +81,23 @@ Deno.serve(async (req) => {
   if (!order) return new Response("unknown order", { status: 200 });
   if (pay?.amount !== undefined && pay.amount !== order.amount) return new Response("amount mismatch", { status: 200 });
 
+  // Guests have no account until they have paid: create it now (email counts as verified, they still sign in with a code later).
+  let uid: string | null = order.user_id ?? null;
+  if (!uid) {
+    const em = String(order.customer_email ?? "").trim().toLowerCase();
+    if (!em) return new Response("no email", { status: 200 });
+    const { data: f1 } = await admin.rpc("find_user_id", { p_email: em });
+    uid = f1 ?? null;
+    if (!uid) {
+      const { data: made } = await admin.auth.admin.createUser({ email: em, email_confirm: true });
+      uid = made?.user?.id ?? null;
+      if (!uid) { const { data: f2 } = await admin.rpc("find_user_id", { p_email: em }); uid = f2 ?? null; }
+    }
+    if (!uid) return new Response("account failed", { status: 500 }); // Razorpay will retry
+    await admin.from("orders").update({ user_id: uid }).eq("razorpay_order_id", orderId);
+  }
   await admin.from("orders").update({ status: "paid", razorpay_payment_id: pay?.id ?? null }).eq("razorpay_order_id", orderId);
-  await admin.from("entitlements").upsert({ user_id: order.user_id, book_slug: order.book_slug, razorpay_payment_id: pay?.id ?? null });
+  await admin.from("entitlements").upsert({ user_id: uid, book_slug: order.book_slug, razorpay_payment_id: pay?.id ?? null });
 
   // Invoice: issued once per order. A failure here never blocks the unlock above.
   try {
@@ -105,7 +120,8 @@ Deno.serve(async (req) => {
         const pass = Deno.env.get("SMTP_PASS");
         if (pass && o.customer_email) {
           const smtp = new SMTPClient({ connection: { hostname: "smtp.hostinger.com", port: 465, tls: true, auth: { username: "hello@valarodigital.com", password: pass } } });
-          await smtp.send({ from: "Valarodigital <hello@valarodigital.com>", to: o.customer_email, subject: `Your tax invoice ${o.invoice_no} | Valarodigital`, content: "Your tax invoice is below. Open it in an HTML-capable mail app, or sign in at valarodigital.com/invoices/ to view and print it.", html });
+          const intro = `<div style="font-family:Arial,Helvetica,sans-serif;max-width:760px;margin:0 auto 18px;padding:18px;border:1px solid #bbb;border-radius:8px;color:#111;font-size:14px"><p style="margin:0 0 10px"><b>Thank you for your purchase.</b> Your book is ready to read online.</p><p style="margin:0 0 14px">To read it, open My books and sign in with this email address (${esc(o.customer_email)}). We send you a 6-digit login code at that time. You can do this any time you like.</p><p style="margin:0"><a href="https://valarodigital.com/library/" style="display:inline-block;background:#ff6a2b;color:#fff;padding:11px 22px;border-radius:999px;text-decoration:none;font-weight:bold">Open My books</a></p></div>`;
+          await smtp.send({ from: "Valarodigital <hello@valarodigital.com>", to: o.customer_email, subject: `Your tax invoice ${o.invoice_no} and your book | Valarodigital`, content: "Thank you for your purchase. To read your book, open https://valarodigital.com/library/ and sign in with this email address. Your tax invoice is below (open it in an HTML-capable mail app, or sign in at valarodigital.com/invoices/).", html: html.replace("<body>", "<body>" + intro) });
           await smtp.close();
           await admin.from("orders").update({ invoice_emailed: true }).eq("razorpay_order_id", orderId);
         }

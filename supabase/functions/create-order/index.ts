@@ -18,7 +18,7 @@ Deno.serve(async (req) => {
     const url = Deno.env.get("SUPABASE_URL")!;
     const admin = createClient(url, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
     // Signed-in buyers send their session token. Guests send only the public anon key and an email:
-    // we find or create their account (email not yet verified: access is only given after they enter the code we mail them).
+    // we only look for an existing account. A new account is created after payment succeeds (see razorpay-webhook).
     const jwt = (req.headers.get("Authorization") ?? "").replace("Bearer ", "");
     const { data: u } = await admin.auth.getUser(jwt);
     let userId: string | null = u?.user?.id ?? null;
@@ -38,12 +38,7 @@ Deno.serve(async (req) => {
       const em = String(customer_email ?? "").trim().toLowerCase();
       if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em) || em.length > 200) return json({ error: "email required" }, 400);
       const { data: found } = await admin.rpc("find_user_id", { p_email: em });
-      userId = found ?? null;
-      if (!userId) {
-        const { data: made, error: me } = await admin.auth.admin.createUser({ email: em, email_confirm: true });
-        if (me || !made.user) return json({ error: "account" }, 500);
-        userId = made.user.id;
-      }
+      userId = found ?? null; // no account is created here; it is created only after the payment succeeds (webhook)
       userEmail = em;
     }
     const addr = String(customer_address ?? "").trim().slice(0, 300) || null; // optional
@@ -53,14 +48,14 @@ Deno.serve(async (req) => {
     const intra = customer_state === "Tamil Nadu";
     const cgst = intra ? Math.floor(tax / 2) : 0, sgst = intra ? tax - cgst : 0, igst = intra ? 0 : tax;
 
-    const { data: own } = await admin.from("entitlements").select("book_slug").eq("user_id", userId).eq("book_slug", book_slug).maybeSingle();
+    const { data: own } = userId ? await admin.from("entitlements").select("book_slug").eq("user_id", userId).eq("book_slug", book_slug).maybeSingle() : { data: null };
     if (own) return json({ already: true, email: userEmail });
 
     const keyId = Deno.env.get("RAZORPAY_KEY_ID")!, secret = Deno.env.get("RAZORPAY_KEY_SECRET")!;
     const r = await fetch("https://api.razorpay.com/v1/orders", {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: "Basic " + btoa(`${keyId}:${secret}`) },
-      body: JSON.stringify({ amount, currency: "INR", receipt: `${book_slug}-${Date.now()}`.slice(0, 40), notes: { user_id: userId, book_slug, base_paise: String(base), gst_paise: String(tax) } }),
+      body: JSON.stringify({ amount, currency: "INR", receipt: `${book_slug}-${Date.now()}`.slice(0, 40), notes: { user_id: userId ?? "", book_slug, base_paise: String(base), gst_paise: String(tax) } }),
     });
     const o = await r.json();
     if (!r.ok) return json({ error: "razorpay" }, 502);
