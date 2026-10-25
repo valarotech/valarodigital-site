@@ -104,8 +104,12 @@ Deno.serve(async (req) => {
     let o = { ...order, razorpay_payment_id: pay?.id ?? order.razorpay_payment_id };
     if (!o.invoice_no) {
       const now = new Date().toISOString();
-      const { data: no, error: ne } = await admin.rpc("next_invoice_no", { p_date: now });
-      if (ne || !no) throw new Error("invoice number failed: " + (ne?.message ?? "empty"));
+      // Atomic: only the first event for this payment gets a number; a second event (payment.captured + order.paid both arrive) stops here.
+      const { data: cl, error: ne } = await admin.rpc("claim_invoice_no", { p_order: orderId, p_date: now });
+      const c = Array.isArray(cl) ? cl[0] : cl;
+      if (ne || !c?.invoice_no) throw new Error("invoice number failed: " + (ne?.message ?? "empty"));
+      if (!c.claimed) return new Response("ok", { status: 200 });
+      const no = c.invoice_no;
       const base = o.base_amount ?? Math.round(o.amount / 1.18);
       const tax = o.amount - base;
       const intra = !o.customer_state || o.customer_state === "Tamil Nadu";
@@ -115,7 +119,7 @@ Deno.serve(async (req) => {
       o = { ...o, invoice_no: no, invoice_date: now, base_amount: base, cgst, sgst, igst, customer_name: o.customer_name ?? o.customer_email ?? "Customer", customer_state: o.customer_state ?? "Tamil Nadu" };
       const { data: prof } = await admin.from("business_profile").select("*").eq("id", 1).single();
       const html = invoiceHtml(o, prof);
-      const { data: saved } = await admin.from("orders").update({ invoice_no: o.invoice_no, invoice_date: now, invoice_html: html, base_amount: base, cgst, sgst, igst, customer_name: o.customer_name, customer_state: o.customer_state }).eq("razorpay_order_id", orderId).is("invoice_no", null).select("razorpay_order_id");
+      const { data: saved } = await admin.from("orders").update({ invoice_no: o.invoice_no, invoice_date: now, invoice_html: html, base_amount: base, cgst, sgst, igst, customer_name: o.customer_name, customer_state: o.customer_state }).eq("razorpay_order_id", orderId).is("invoice_html", null).select("razorpay_order_id");
       if (saved && saved.length) {
         const pass = Deno.env.get("SMTP_PASS");
         if (pass && o.customer_email) {
