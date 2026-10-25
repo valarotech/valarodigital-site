@@ -90,12 +90,15 @@
     });
   }
 
+  var rzpPromise = null;
   function loadRzp() {
-    return new Promise(function (ok, no) {
+    if (rzpPromise) return rzpPromise;
+    rzpPromise = new Promise(function (ok, no) {
       if (window.Razorpay) return ok();
       var s = document.createElement('script'); s.src = 'https://checkout.razorpay.com/v1/checkout.js';
-      s.onload = ok; s.onerror = no; document.head.appendChild(s);
+      s.onload = ok; s.onerror = function () { rzpPromise = null; no(); }; document.head.appendChild(s);
     });
+    return rzpPromise;
   }
   async function waitForAccess(uid) {
     say('Payment received. Unlocking your book…');
@@ -110,6 +113,7 @@
     var det = await askDetails(session);
     if (!det) { say(''); return; }
     btn.disabled = true; say('Starting payment…');
+    var rzpReady = loadRzp().catch(function () {}); // load Razorpay while the order is being created
     try {
       var headers = { 'Content-Type': 'application/json', 'apikey': C.SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + (session ? session.access_token : C.SUPABASE_ANON_KEY) };
       var res = await fetch(C.SUPABASE_URL + '/functions/v1/create-order', {
@@ -123,7 +127,7 @@
         var s0 = await askCode(det.email); await waitForAccess(s0.user.id); return;
       }
       if (!res.ok || !d.order_id) throw new Error(d.error || 'order');
-      await loadRzp();
+      await rzpReady; await loadRzp();
       var rz = new window.Razorpay({
         key: d.key_id, amount: d.amount, currency: 'INR', order_id: d.order_id,
         name: 'Valarodigital', description: B.label + ' (online access)',
@@ -140,6 +144,7 @@
     } catch (e) { btn.disabled = false; say('Could not start the payment. Please check your details and try again.', true); }
   }
   async function init() {
+    loadRzp().catch(function () {}); // preload so the payment window opens faster
     var r = await sb.auth.getSession(), session = r.data.session;
     if (session && await window.vdHasBook(session.user.id, SLUG)) {
       label.textContent = 'Read now'; btn.href = B.read; btn.onclick = null;
