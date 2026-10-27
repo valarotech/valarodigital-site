@@ -476,3 +476,8 @@ body.rd-hidden .rd-cover { display: flex; }
 .back-row a{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;background:linear-gradient(135deg,#ff6a2b,#ffb13b);color:#fff;font-weight:700;font-size:.95rem;text-decoration:none;box-shadow:0 8px 18px -8px rgba(255,106,43,.65);transition:transform .15s,box-shadow .15s}
 .back-row a:hover{transform:translateY(-1px);box-shadow:0 12px 22px -8px rgba(255,106,43,.75);text-decoration:none}
 .back-row a:focus-visible{outline:3px solid #0b1530;outline-offset:2px}
+
+/* Real book cover images */
+.book-cover-img{display:block;width:100%;height:auto;aspect-ratio:3/4;object-fit:cover;border-radius:14px;box-shadow:0 22px 44px -18px rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.12)}
+.book-row-cover .book-cover-img{border-radius:10px;box-shadow:0 14px 28px -12px rgba(0,0,0,.45)}
+@media (max-width:900px){.book-hero .book-cover-img{max-width:280px}}
