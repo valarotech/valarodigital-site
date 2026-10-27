@@ -481,3 +481,9 @@ body.rd-hidden .rd-cover { display: flex; }
 .book-cover-img{display:block;width:100%;height:auto;aspect-ratio:3/4;object-fit:cover;border-radius:14px;box-shadow:0 22px 44px -18px rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.12)}
 .book-row-cover .book-cover-img{border-radius:10px;box-shadow:0 14px 28px -12px rgba(0,0,0,.45)}
 @media (max-width:900px){.book-hero .book-cover-img{max-width:280px}}
+
+/* Author block */
+.author-card{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+.author-photo{width:96px;height:96px;border-radius:50%;flex:none;display:block}
+.author-card p{margin:0 0 8px}
+.author-link{display:inline-flex;align-items:center;gap:6px;font-weight:600}
