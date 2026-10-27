@@ -36,6 +36,8 @@
       var el;
       var im = /^!\[([^\]]*)\]\(([a-z0-9_-]+)\)$/.exec(blk);
       if (im) { el = document.createElement('img'); el.alt = im[1]; el.draggable = false; el.setAttribute('data-name', im[2]); }
+      else if ((im = /^!\[([^\]]*)\]\((\/assets\/img\/[a-z0-9._-]+)\)$/.exec(blk))) { el = document.createElement('img'); el.alt = im[1]; el.draggable = false; el.src = im[2]; el.width = 120; el.height = 120; el.style.borderRadius = '50%'; }
+      else if ((im = /^\[([^\]]+)\]\((https:\/\/www\.linkedin\.com\/in\/[A-Za-z0-9_-]+\/?)\)$/.exec(blk))) { el = document.createElement('p'); var a = document.createElement('a'); a.textContent = im[1]; a.href = im[2]; a.target = '_blank'; a.rel = 'noopener'; el.appendChild(a); }
       else if (blk.indexOf('### ') === 0) { el = document.createElement('h3'); el.textContent = blk.slice(4); }
       else if (blk.indexOf('## ') === 0) { el = document.createElement('h2'); el.textContent = blk.slice(3); }
       else if (blk.indexOf('- ') === 0) { el = document.createElement('ul'); blk.split('\n').forEach(function (l) { var li = document.createElement('li'); li.textContent = l.replace(/^-\s*/, ''); el.appendChild(li); }); }
