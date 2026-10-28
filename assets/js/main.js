@@ -2,11 +2,8 @@
 (function () {
   document.documentElement.classList.add('js');
 
-  // Google Apps Script web-app URL for the enquiry form.
-  // If empty, the form falls back to WhatsApp.
-  var FORM_ENDPOINT = 'https://script.google.com/macros/s/AKfycbyf-hsikwkpo4dtVPuvqeZgl24f4ndWcBPR_cCjnaD78vXaD1v4OMsitKM_lBi3e1Fb/exec';
-  var SHEET_NAME = 'Valarodigital Leads';
-  var WHATSAPP = '917904931067';
+  // Where the Free Business Consultation form is sent (Supabase edge function "submit-lead").
+  var LEAD_ENDPOINT = 'https://opmpglxwltsxfmanblzk.supabase.co/functions/v1/submit-lead';
 
   // Mobile menu
   var toggle = document.querySelector('.nav-toggle');
@@ -53,50 +50,65 @@
     });
   });
 
-  // Enquiry form
+  // Free Business Consultation form. The server checks everything again; these checks only give quick, friendly feedback.
   var form = document.getElementById('enquiry-form');
   if (!form) return;
   var status = form.querySelector('.form-status');
+  var button = form.querySelector('button[type="submit"]');
+  var FIELDS = ['name', 'mobile', 'email', 'service', 'details', 'consent'];
+  var busy = false;
+
+  function setErr(field, msg) {
+    var el = document.getElementById('e-' + field);
+    var input = form.elements[field];
+    if (el) el.textContent = msg || '';
+    if (input) { if (msg) input.setAttribute('aria-invalid', 'true'); else input.removeAttribute('aria-invalid'); }
+  }
+  function check(v) {
+    var e = {};
+    var name = v.name.replace(/\s+/g, ' ').trim();
+    if (name.length < 2 || name.length > 100 || !/^[\p{L}\p{M}][\p{L}\p{M} .'\u2019-]*$/u.test(name)) e.name = 'Please enter your name (letters only).';
+    var mobile = v.mobile.replace(/[\s-]/g, '').replace(/^(\+91|91|0)(?=[6-9][0-9]{9}$)/, '');
+    if (!/^[6-9][0-9]{9}$/.test(mobile)) e.mobile = 'Please enter a valid 10-digit mobile number.';
+    var email = v.email.trim();
+    if (email.length > 254 || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) e.email = 'Please enter a valid email address.';
+    if (!v.service) e.service = 'Please choose a service.';
+    if (v.details.length > 1000) e.details = 'Please keep your note under 1000 characters.';
+    if (!v.consent) e.consent = 'Please tick the box so we can contact you.';
+    return e;
+  }
+  function say(cls, msg) { status.className = 'form-status' + (cls ? ' ' + cls : ''); status.textContent = msg; }
 
   form.addEventListener('submit', function (e) {
     e.preventDefault();
-    var data = new FormData(form);
-    if (data.get('website')) return; // spam trap
+    if (busy) return;
+    var f = form.elements;
+    if (f.website.value) return; // spam trap: real visitors never see this field
+    var v = { name: f.name.value, mobile: f.mobile.value, email: f.email.value, service: f.service.value, details: f.details.value, consent: f.consent.checked };
+    var errs = check(v);
+    FIELDS.forEach(function (k) { setErr(k, errs[k]); });
+    var first = FIELDS.filter(function (k) { return errs[k]; })[0];
+    if (first) { say('err', 'Please fix the highlighted fields.'); f[first].focus(); return; }
 
-    var name = (data.get('name') || '').trim();
-    var phone = (data.get('phone') || '').trim();
-    if (!name || !phone) {
-      status.className = 'form-status err';
-      status.textContent = 'Please add your name and phone number.';
-      return;
-    }
-
-    if (!FORM_ENDPOINT) {
-      var text = 'Hi Valarodigital,\n' +
-        'Name: ' + name + '\nPhone: ' + phone +
-        (data.get('business') ? '\nBusiness: ' + data.get('business') : '') +
-        (data.get('city') ? '\nCity: ' + data.get('city') : '') +
-        '\nNeed: ' + data.get('service') +
-        (data.get('message') ? '\nMessage: ' + data.get('message') : '');
-      window.open('https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(text), '_blank', 'noopener');
-      status.className = 'form-status ok';
-      status.textContent = 'Opening WhatsApp with your details…';
-      return;
-    }
-
-    data.append('sheet', SHEET_NAME);
-    data.append('page', location.href);
-    status.className = 'form-status';
-    status.textContent = 'Sending…';
-    fetch(FORM_ENDPOINT, { method: 'POST', mode: 'no-cors', body: new URLSearchParams(data) })
-      .then(function () {
-        form.reset();
-        status.className = 'form-status ok';
-        status.textContent = 'Thank you! We will reply within one business day.';
+    busy = true; button.disabled = true; say('', 'Sending\u2026');
+    fetch(LEAD_ENDPOINT, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: v.name, mobile: v.mobile, email: v.email, service: v.service, details: v.details, consent: true,
+        website: f.website.value, t: Math.round(performance.now()), page: location.pathname })
+    }).then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return { status: r.status, body: j }; }); })
+      .then(function (res) {
+        if (res.body && res.body.ok) {
+          form.reset();
+          FIELDS.forEach(function (k) { setErr(k, ''); });
+          say('ok', 'Thank you! We have received your request and will contact you within one business day.');
+        } else if (res.status === 422 && res.body.errors) {
+          FIELDS.forEach(function (k) { setErr(k, res.body.errors[k]); });
+          say('err', 'Please fix the highlighted fields.');
+        } else if (res.status === 429) {
+          say('err', 'We already have your request or are very busy. Please WhatsApp us on +91 79049 31067.');
+        } else { throw new Error('bad'); }
       })
-      .catch(function () {
-        status.className = 'form-status err';
-        status.textContent = 'Could not send. Please message us on WhatsApp.';
-      });
+      .catch(function () { say('err', 'Sorry, we could not send this. Please WhatsApp us on +91 79049 31067 or email hello@valarodigital.com.'); })
+      .then(function () { busy = false; button.disabled = false; });
   });
 })();

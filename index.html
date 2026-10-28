@@ -50,7 +50,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Sora:wght@600;700;800&amp;family=Noto+Sans+Tamil:wght@500;600&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/style.css?v=202610281800">
 </head>
 <body>
   <!-- Icon sprite -->
@@ -101,7 +101,7 @@
           <li><a href="/books/">Books</a></li>
           <li><a href="/library/">My books</a></li>
           <li><a href="#contact">Contact</a></li>
-          <li class="nav-cta"><a href="https://wa.me/917904931067?text=Hi%20Valarodigital%2C%20I%20would%20like%20to%20know%20more%20about%20your%20services." class="btn btn-primary btn-sm" target="_blank" rel="noopener"><svg class="ic"><use href="#i-wa"/></svg>WhatsApp us</a></li>
+          <li class="nav-cta"><a href="#contact" class="btn btn-primary btn-sm">Free consultation</a></li>
         </ul>
       </nav>
     </div>
@@ -120,8 +120,8 @@
           <p class="hero-lead">Websites, Google listings, WhatsApp automation and easy GST billing software for shops, clinics, schools and manufacturers. Simple pricing, fixed quotes, and real people you can call.</p>
           <p class="tamil" lang="ta">தமிழிலும் பேசலாம் · Salem-ல நேரில் சந்திக்கலாம்</p>
           <div class="hero-actions">
-            <a href="https://wa.me/917904931067?text=Hi%20Valarodigital%2C%20I%20would%20like%20to%20know%20more%20about%20your%20services." class="btn btn-primary btn-lg" target="_blank" rel="noopener"><svg class="ic"><use href="#i-wa"/></svg>Chat on WhatsApp</a>
-            <a href="#services" class="btn btn-ghost btn-lg">See what we do <svg class="ic"><use href="#i-arrow"/></svg></a>
+            <a href="#contact" class="btn btn-primary btn-lg">Book a free consultation <svg class="ic"><use href="#i-arrow"/></svg></a>
+            <a href="https://wa.me/917904931067?text=Hi%20Valarodigital%2C%20I%20would%20like%20to%20know%20more%20about%20your%20services." class="btn btn-ghost btn-lg" target="_blank" rel="noopener"><svg class="ic"><use href="#i-wa"/></svg>Chat on WhatsApp</a>
           </div>
           <ul class="hero-points">
             <li><svg class="ic"><use href="#i-check"/></svg>Free first call or visit</li>
@@ -258,6 +258,21 @@
       </div>
     </section>
 
+    <!-- ============ CTA BAND ============ -->
+    <section class="cta-band">
+      <div class="container cta-band-inner">
+        <div>
+          <h2>Not sure what your business needs?</h2>
+          <p>Tell us about your shop or business. We will suggest the simplest next step. The first call or visit is free, with no obligation.</p>
+        </div>
+        <div class="cta-band-actions">
+          <a href="#contact" class="btn btn-primary btn-lg">Book a free consultation <svg class="ic"><use href="#i-arrow"/></svg></a>
+          <a href="https://wa.me/917904931067?text=Hi%20Valarodigital%2C%20I%20would%20like%20to%20know%20more%20about%20your%20services." class="btn btn-ghost btn-lg" target="_blank" rel="noopener"><svg class="ic"><use href="#i-wa"/></svg>WhatsApp us</a>
+        </div>
+      </div>
+    </section>
+
+
     <!-- ============ SOFTWARE PRODUCTS ============ -->
     <section class="section section-dark" id="products">
       <div class="dark-glow" aria-hidden="true"></div>
@@ -350,6 +365,21 @@
       </div>
     </section>
 
+    <!-- ============ CTA BAND ============ -->
+    <section class="cta-band cta-band-soft">
+      <div class="container cta-band-inner">
+        <div>
+          <h2>Want a fixed quote for your business?</h2>
+          <p>Book a free consultation and we will explain the options in simple words, then send a written quote.</p>
+        </div>
+        <div class="cta-band-actions">
+          <a href="#contact" class="btn btn-primary btn-lg">Book a free consultation <svg class="ic"><use href="#i-arrow"/></svg></a>
+          <a href="https://wa.me/917904931067?text=Hi%20Valarodigital%2C%20I%20would%20like%20to%20know%20more%20about%20your%20services." class="btn btn-outline btn-lg" target="_blank" rel="noopener"><svg class="ic"><use href="#i-wa"/></svg>WhatsApp us</a>
+        </div>
+      </div>
+    </section>
+
+
     <!-- ============ TRAINING ============ -->
     <section class="section" id="training">
       <div class="container training">
@@ -431,9 +461,9 @@
       <div class="dark-glow" aria-hidden="true"></div>
       <div class="container contact">
         <div class="contact-copy reveal">
-          <span class="eyebrow">Contact</span>
+          <span class="eyebrow">Free Business Consultation</span>
           <h2>Let's get your business <span class="grad-text">online and saving time</span></h2>
-          <p>Send us a message on WhatsApp or fill the form. We reply within one business day.</p>
+          <p>Book a free business consultation. Fill the short form and we will call or message you within one business day. You can also reach us on WhatsApp.</p>
           <ul class="contact-list">
             <li><svg><use href="#i-wa"/></svg><a href="https://wa.me/917904931067" target="_blank" rel="noopener">+91 79049 31067 (WhatsApp)</a></li>
             <li><svg><use href="#i-phone"/></svg><a href="tel:+917904931067">+91 79049 31067</a></li>
@@ -441,17 +471,24 @@
             <li><svg><use href="#i-pin"/></svg><span>Salem, Tamil Nadu · Serving all of India</span></li>
           </ul>
         </div>
-        <form class="form reveal" id="enquiry-form" novalidate>
+        <form class="form reveal" id="enquiry-form" novalidate aria-labelledby="form-title">
+          <h3 id="form-title" class="form-title">Free Business Consultation</h3>
+          <label for="f-name">Your name
+            <input type="text" id="f-name" name="name" required minlength="2" maxlength="100" autocomplete="name" aria-describedby="e-name">
+            <span class="field-err" id="e-name" role="alert"></span>
+          </label>
           <div class="field-row">
-            <label>Your name<input type="text" name="name" required autocomplete="name"></label>
-            <label>Phone / WhatsApp<input type="tel" name="phone" required autocomplete="tel" inputmode="tel"></label>
+            <label for="f-mobile">Mobile number (WhatsApp)
+              <input type="tel" id="f-mobile" name="mobile" required inputmode="numeric" maxlength="16" autocomplete="tel-national" placeholder="10-digit number" aria-describedby="e-mobile">
+              <span class="field-err" id="e-mobile" role="alert"></span>
+            </label>
+            <label for="f-email">Email
+              <input type="email" id="f-email" name="email" required maxlength="254" autocomplete="email" aria-describedby="e-email">
+              <span class="field-err" id="e-email" role="alert"></span>
+            </label>
           </div>
-          <div class="field-row">
-            <label>Business name<input type="text" name="business" autocomplete="organization"></label>
-            <label>City<input type="text" name="city" autocomplete="address-level2"></label>
-          </div>
-          <label>What do you need?
-            <select name="service" id="service-select">
+          <label for="service-select">What do you need?
+            <select name="service" id="service-select" required aria-describedby="e-service">
               <option>Business website</option>
               <option>Google Business Profile</option>
               <option>WhatsApp Business automation</option>
@@ -471,11 +508,23 @@
               <option>DevOps / AWS online training</option>
               <option>Something else</option>
             </select>
+            <span class="field-err" id="e-service" role="alert"></span>
           </label>
-          <label>Message<textarea name="message" rows="4" placeholder="Tell us a little about your business and what you need"></textarea></label>
+          <label for="f-details">Anything else we should know? (optional)
+            <textarea id="f-details" name="details" rows="3" maxlength="1000" placeholder="For example: type of business, and what you want to improve"></textarea>
+            <span class="field-err" id="e-details" role="alert"></span>
+          </label>
           <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
-          <button type="submit" class="btn btn-primary btn-lg btn-block">Send enquiry <svg class="ic"><use href="#i-arrow"/></svg></button>
+          <div class="consent">
+            <label class="consent-label" for="f-consent">
+              <input type="checkbox" id="f-consent" name="consent" value="yes" required aria-describedby="e-consent">
+              <span id="consent-text">I agree that Valarodigital (Valaro Enterprises) may contact me by phone, WhatsApp and email about my enquiry, and may store the details I entered for that purpose. I have read the <a href="/privacy/" target="_blank" rel="noopener">Privacy Policy</a>.</span>
+            </label>
+            <span class="field-err" id="e-consent" role="alert"></span>
+          </div>
+          <button type="submit" class="btn btn-primary btn-lg btn-block">Request free consultation <svg class="ic"><use href="#i-arrow"/></svg></button>
           <p class="form-status" role="status" aria-live="polite"></p>
+          <p class="form-note">We use your details only to reply to this request. No spam, no selling your data.</p>
         </form>
       </div>
     </section>
@@ -511,6 +560,6 @@
 
   <a class="wa-float" href="https://wa.me/917904931067?text=Hi%20Valarodigital%2C%20I%20would%20like%20to%20know%20more%20about%20your%20services." target="_blank" rel="noopener" aria-label="Chat on WhatsApp"><svg><use href="#i-wa"/></svg></a>
 
-  <script src="assets/js/main.js"></script>
+  <script src="assets/js/main.js?v=202610281800"></script>
 </body>
 </html>

@@ -492,3 +492,25 @@ body.rd-hidden .rd-cover { display: flex; }
 .rd-page pre code { font-family: Consolas, "SFMono-Regular", Menlo, monospace; font-size: .92rem; white-space: pre; }
 .rd-page blockquote.callout { background: #fff8e1; border-left: 4px solid var(--orange); margin: 1em 0; padding: 10px 16px; border-radius: 0 10px 10px 0; }
 .rd-page ol { padding-left: 1.4em; }
+
+/* ---------- Lead form and call-to-action bands ---------- */
+.form-title { margin: 0; font-size: 1.25rem; color: var(--ink); }
+.field-err { color: #c2410c; font-size: .82rem; font-weight: 500; min-height: 0; }
+.form input[aria-invalid="true"], .form select[aria-invalid="true"], .form textarea[aria-invalid="true"] { border-color: #c2410c; }
+.consent-label { display: flex !important; grid-template-columns: none; gap: 10px; align-items: flex-start; font-weight: 400 !important; font-size: .86rem !important; line-height: 1.5; cursor: pointer; }
+.consent-label input[type="checkbox"] { width: 20px; height: 20px; flex: 0 0 20px; margin: 2px 0 0; accent-color: var(--orange); padding: 0; }
+.consent a { color: var(--orange); text-decoration: underline; }
+.form-note { margin: 0; font-size: .8rem; color: var(--muted); text-align: center; }
+.form .btn:disabled { opacity: .6; cursor: progress; transform: none; }
+.cta-band { background: var(--navy); color: #fff; padding: 44px 0; }
+.cta-band-soft { background: var(--soft); color: var(--ink); }
+.cta-band-inner { display: flex; align-items: center; justify-content: space-between; gap: 24px 40px; flex-wrap: wrap; }
+.cta-band h2 { margin: 0 0 6px; font-size: clamp(1.35rem, 3vw, 1.8rem); }
+.cta-band p { margin: 0; max-width: 560px; opacity: .85; }
+.cta-band-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.cta-band:not(.cta-band-soft) .btn-outline { color: #fff; border-color: rgba(255,255,255,.35); }
+@media (max-width: 640px) { .cta-band-actions, .cta-band-actions .btn { width: 100%; } }
+.cta-band:not(.cta-band-soft) h2 { color: #fff; }
+.form .form-title { color: var(--ink); }
+.cta-band-inner > div:first-child { flex: 1 1 360px; }
+.cta-band:not(.cta-band-soft) .btn-ghost { color: #fff; background: transparent; border-color: rgba(255,255,255,.4); }
