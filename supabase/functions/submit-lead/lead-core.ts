@@ -16,7 +16,7 @@ export const CONSENT_TEXT =
 export type Clean = { name: string; mobile: string; email: string; service: string; details: string | null };
 export type Result = { ok: true; value: Clean } | { ok: false; errors: Record<string, string> };
 
-const CTRL = /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F\u2028\u2029]/g;
+const CTRL = new RegExp("[\\x00-\\x08\\x0B\\x0C\\x0E-\\x1F\\x7F" + String.fromCharCode(0x2028, 0x2029) + "]", "g"); // control chars and line/paragraph separators
 
 export function validate(b: Record<string, unknown>): Result {
   const errors: Record<string, string> = {};
