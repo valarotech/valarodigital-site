@@ -3,6 +3,8 @@
   document.documentElement.classList.add('js');
 
   // Where the Free Business Consultation form is sent (Supabase edge function "submit-lead").
+  // Cloudflare Turnstile PUBLIC site key. Leave empty until the key is created: the check box then does not appear.
+  var TURNSTILE_SITE_KEY = '';
   var LEAD_ENDPOINT = 'https://opmpglxwltsxfmanblzk.supabase.co/functions/v1/submit-lead';
 
   // Mobile menu
@@ -57,6 +59,15 @@
   var button = form.querySelector('button[type="submit"]');
   var FIELDS = ['name', 'mobile', 'email', 'service', 'details', 'consent'];
   var busy = false;
+  var cfToken = '', cfWidget = null;
+  if (TURNSTILE_SITE_KEY) {
+    window.vdTurnstileReady = function () {
+      cfWidget = window.turnstile.render('#cf-box', { sitekey: TURNSTILE_SITE_KEY, callback: function (t) { cfToken = t; }, 'expired-callback': function () { cfToken = ''; }, 'error-callback': function () { cfToken = ''; } });
+    };
+    var sc = document.createElement('script');
+    sc.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=vdTurnstileReady';
+    sc.async = true; sc.defer = true; document.head.appendChild(sc);
+  }
 
   function setErr(field, msg) {
     var el = document.getElementById('e-' + field);
@@ -90,15 +101,17 @@
     var first = FIELDS.filter(function (k) { return errs[k]; })[0];
     if (first) { say('err', 'Please fix the highlighted fields.'); f[first].focus(); return; }
 
+    if (TURNSTILE_SITE_KEY && !cfToken) { say('err', 'Please wait for the security check to finish, then try again.'); return; }
     busy = true; button.disabled = true; say('', 'Sending\u2026');
     fetch(LEAD_ENDPOINT, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: v.name, mobile: v.mobile, email: v.email, service: v.service, details: v.details, consent: true,
-        website: f.website.value, t: Math.round(performance.now()), page: location.pathname })
+        website: f.website.value, cf: cfToken, t: Math.round(performance.now()), page: location.pathname })
     }).then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return { status: r.status, body: j }; }); })
       .then(function (res) {
         if (res.body && res.body.ok) {
           form.reset();
+          if (cfWidget !== null) { cfToken = ''; window.turnstile.reset(cfWidget); }
           FIELDS.forEach(function (k) { setErr(k, ''); });
           say('ok', 'Thank you! We have received your request and will contact you within one business day.');
         } else if (res.status === 422 && res.body.errors) {
@@ -106,6 +119,9 @@
           say('err', 'Please fix the highlighted fields.');
         } else if (res.status === 429) {
           say('err', 'We already have your request or are very busy. Please WhatsApp us on +91 79049 31067.');
+        } else if (res.body && res.body.error === 'captcha') {
+          if (cfWidget !== null) { cfToken = ''; window.turnstile.reset(cfWidget); }
+          say('err', 'The security check did not pass. Please try again.');
         } else { throw new Error('bad'); }
       })
       .catch(function () { say('err', 'Sorry, we could not send this. Please WhatsApp us on +91 79049 31067 or email hello@valarodigital.com.'); })

@@ -13,6 +13,7 @@ Secrets (Razorpay Key Secret, webhook secret) live ONLY in Supabase -> Edge Func
 Not live until you do these steps, in this order:
 1. Run `supabase/leads.sql` once in the Supabase SQL editor. It creates `consultation_leads` with Row Level Security ON and no public access.
 2. Deploy the edge function `submit-lead` (files `index.ts` and `lead-core.ts`) with JWT verification OFF. It reuses the existing `SMTP_PASS` secret.
-3. Optional secrets: `LEAD_NOTIFY_TO` (where the alert email goes, default valaroenterprises@gmail.com), `LEAD_HASH_SALT` (any long random text), `LEAD_ALLOWED_ORIGINS`.
+3. Cloudflare Turnstile (free): create a widget for valarodigital.com in the Cloudflare dashboard. Put the public Site Key in `TURNSTILE_SITE_KEY` in `assets/js/main.js`, and the Secret Key in the Supabase secret `TURNSTILE_SECRET`. Until both are set the check box does not appear and the server skips it.
+   Optional secrets: `LEAD_NOTIFY_TO` (where the alert email goes, default valaroenterprises@gmail.com), `LEAD_HASH_SALT` (any long random text), `LEAD_ALLOWED_ORIGINS`.
 4. Then publish the site files (homepage, `assets/js/main.js`, CSS, privacy page).
 View enquiries in Supabase -> Table Editor -> `consultation_leads`. The `status` column (new, contacted, won, lost, spam) is for your own follow-up tracking.

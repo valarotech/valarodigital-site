@@ -514,3 +514,4 @@ body.rd-hidden .rd-cover { display: flex; }
 .form .form-title { color: var(--ink); }
 .cta-band-inner > div:first-child { flex: 1 1 360px; }
 .cta-band:not(.cta-band-soft) .btn-ghost { color: #fff; background: transparent; border-color: rgba(255,255,255,.4); }
+.cf-box { min-height: 0; display: flex; justify-content: center; }

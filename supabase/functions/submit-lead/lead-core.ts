@@ -55,6 +55,10 @@ export interface Deps {
   insert: (row: Record<string, unknown>) => Promise<string>; // returns the new id; throws on failure
   markEmailed: (id: string) => Promise<void>;
   sendMail: (subject: string, text: string, html: string) => Promise<void>;
+  // Thank-you email to the visitor (fixed text only). Optional.
+  sendConfirm?: (to: string, subject: string, text: string, html: string) => Promise<void>;
+  // Cloudflare Turnstile check. Leave undefined while no secret key is set: the check is then skipped.
+  verifyCaptcha?: (token: string, ip: string) => Promise<boolean>;
   log: (msg: string) => void;
 }
 
@@ -80,6 +84,14 @@ export async function handleLead(req: Request, d: Deps): Promise<Response> {
   if (typeof body.website === "string" && body.website.trim() !== "") return json({ ok: true });
   if (typeof body.t !== "number" || !isFinite(body.t)) return json({ ok: false }, 400);
   if (body.t < LIMITS.minFillMs) return json({ ok: true });
+
+  if (d.verifyCaptcha) {
+    const token = typeof body.cf === "string" ? body.cf.slice(0, 2100) : "";
+    const fwd0 = (req.headers.get("cf-connecting-ip") ?? req.headers.get("x-forwarded-for") ?? "").split(",")[0].trim();
+    let human = false;
+    try { human = token !== "" && (await d.verifyCaptcha(token, fwd0)); } catch (e) { d.log("captcha check failed: " + e); }
+    if (!human) return json({ ok: false, error: "captcha" }, 400);
+  }
 
   const v = validate(body);
   if (!v.ok) return json({ ok: false, errors: v.errors }, 422);
@@ -115,6 +127,15 @@ export async function handleLead(req: Request, d: Deps): Promise<Response> {
     await d.sendMail(`New consultation request: ${c.service} (${c.name.slice(0, 40)})`, lines.join("\n"), html);
     await d.markEmailed(id);
   } catch (e) { d.log("notify email failed: " + e); }
+
+  // Thank-you email to the visitor. Fixed wording; the only visitor text in it is their own name and the service they chose, escaped.
+  if (d.sendConfirm) {
+    try {
+      const text = `Hello ${c.name},\n\nThank you for contacting Valarodigital. We have received your request for a free consultation about: ${c.service}.\n\nWe will call or message you within one business day. If it is urgent, WhatsApp us on +91 79049 31067.\n\nIf you did not make this request, you can ignore this email.\n\nValarodigital (Valaro Enterprises), Salem, Tamil Nadu\nhttps://valarodigital.com`;
+      const html = `<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#111;max-width:560px"><p>Hello ${esc(c.name)},</p><p>Thank you for contacting Valarodigital. We have received your request for a free consultation about: <b>${esc(c.service)}</b>.</p><p>We will call or message you within one business day. If it is urgent, WhatsApp us on <a href="https://wa.me/917904931067">+91 79049 31067</a>.</p><p style="color:#555">If you did not make this request, you can ignore this email.</p><p style="color:#555">Valarodigital (Valaro Enterprises), Salem, Tamil Nadu<br><a href="https://valarodigital.com">valarodigital.com</a></p></div>`;
+      await d.sendConfirm(c.email, "We received your request | Valarodigital", text, html);
+    } catch (e) { d.log("confirmation email failed: " + e); }
+  }
 
   return json({ ok: true });
 }
