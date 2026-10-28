@@ -4,7 +4,7 @@
 
   // Where the Free Business Consultation form is sent (Supabase edge function "submit-lead").
   // Cloudflare Turnstile PUBLIC site key. Leave empty until the key is created: the check box then does not appear.
-  var TURNSTILE_SITE_KEY = '';
+  var TURNSTILE_SITE_KEY = '0x4AAAAAAFphIRZHgwpEvW0o';
   var LEAD_ENDPOINT = 'https://opmpglxwltsxfmanblzk.supabase.co/functions/v1/submit-lead';
 
   // Mobile menu
