@@ -3,7 +3,7 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 
 // Base prices in paise, fixed on the server. Rs 299 and Rs 199, plus GST added at checkout.
 const GST_PERCENT = 18;
-const BOOKS: Record<string, number> = { "ai-agents-tamil": 29900, "claude-code-commands-ta": 19900 };
+const BOOKS: Record<string, number> = { "ai-agents-tamil": 29900, "claude-code-commands-ta": 19900, "rea-tamil": 19900 };
 const STATES = ["Andaman and Nicobar Islands","Andhra Pradesh","Arunachal Pradesh","Assam","Bihar","Chandigarh","Chhattisgarh","Dadra and Nagar Haveli and Daman and Diu","Delhi","Goa","Gujarat","Haryana","Himachal Pradesh","Jammu and Kashmir","Jharkhand","Karnataka","Kerala","Ladakh","Lakshadweep","Madhya Pradesh","Maharashtra","Manipur","Meghalaya","Mizoram","Nagaland","Odisha","Puducherry","Punjab","Rajasthan","Sikkim","Tamil Nadu","Telangana","Tripura","Uttar Pradesh","Uttarakhand","West Bengal"];
 const cors = {
   "Access-Control-Allow-Origin": "*",

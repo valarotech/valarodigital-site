@@ -36,5 +36,11 @@
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
+  <url>
+    <loc>https://valarodigital.com/books/rea-tamil/</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
   <url><loc>https://valarodigital.com/books/</loc></url>
 </urlset>

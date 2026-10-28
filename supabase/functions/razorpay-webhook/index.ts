@@ -8,6 +8,7 @@ const hex = (b: ArrayBuffer) => [...new Uint8Array(b)].map((x) => x.toString(16)
 const TITLES: Record<string, string> = {
   "ai-agents-tamil": "Tamil AI Agents book (online access)",
   "claude-code-commands-ta": "Claude Code slash commands guide in Tamil (online access)",
+  "rea-tamil": "REA Reverse Engineer Anything guide in Tamil (online access)",
 };
 
 // deno-lint-ignore no-explicit-any

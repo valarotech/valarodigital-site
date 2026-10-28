@@ -487,3 +487,8 @@ body.rd-hidden .rd-cover { display: flex; }
 .author-photo{width:96px;height:96px;border-radius:50%;flex:none;display:block}
 .author-card p{margin:0 0 8px}
 .author-link{display:inline-flex;align-items:center;gap:6px;font-weight:600}
+
+.rd-page pre { background: #0b1530; color: #e8eefc; border-radius: 10px; padding: 14px 16px; overflow-x: auto; margin: 1em 0; line-height: 1.55; }
+.rd-page pre code { font-family: Consolas, "SFMono-Regular", Menlo, monospace; font-size: .92rem; white-space: pre; }
+.rd-page blockquote.callout { background: #fff8e1; border-left: 4px solid var(--orange); margin: 1em 0; padding: 10px 16px; border-radius: 0 10px 10px 0; }
+.rd-page ol { padding-left: 1.4em; }

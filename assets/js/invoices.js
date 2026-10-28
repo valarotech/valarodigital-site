@@ -2,7 +2,7 @@
 (function () {
   var sb = window.vdSb, msg = document.getElementById('inv-msg'), list = document.getElementById('inv-list');
   var view = document.getElementById('inv-view'), frame = document.getElementById('inv-frame');
-  var NAMES = { 'ai-agents-tamil': 'Tamil AI Agents book', 'claude-code-commands-ta': 'Claude Code commands guide (Tamil)' };
+  var NAMES = { 'ai-agents-tamil': 'Tamil AI Agents book', 'claude-code-commands-ta': 'Claude Code commands guide (Tamil)', 'rea-tamil': 'REA Reverse Engineer Anything guide (Tamil)' };
   document.getElementById('inv-back').addEventListener('click', function () { view.hidden = true; list.hidden = false; });
   document.getElementById('inv-print').addEventListener('click', function () { frame.contentWindow.focus(); frame.contentWindow.print(); });
   (async function () {

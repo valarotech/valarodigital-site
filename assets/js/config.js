@@ -10,6 +10,7 @@ window.VD_CONFIG = {
   // Every product sold here. Prices are enforced on the server (create-order function), not from this file.
   BOOKS: {
     "ai-agents-tamil":          { url: "/books/ai-agents-tamil/",          read: "/read/",                          price: 299, label: "Tamil AI Agents book" },
-    "claude-code-commands-ta":  { url: "/books/claude-code-commands-tamil/", read: "/read/?b=claude-code-commands-ta", price: 199, label: "Claude Code commands guide (Tamil)" }
+    "claude-code-commands-ta":  { url: "/books/claude-code-commands-tamil/", read: "/read/?b=claude-code-commands-ta", price: 199, label: "Claude Code commands guide (Tamil)" },
+    "rea-tamil":                { url: "/books/rea-tamil/", read: "/read/?b=rea-tamil", price: 199, label: "REA: Reverse Engineer Anything (Tamil)" }
   }
 };

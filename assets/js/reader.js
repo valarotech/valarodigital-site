@@ -28,10 +28,31 @@
     $('wm').style.backgroundImage = 'url("data:image/svg+xml,' + encodeURIComponent(svg) + '")';
   }
   // Content is plain text: blank line = new paragraph, "## " = heading, "- " = bullet. Set with textContent, so no HTML is ever injected.
+  // Splits on blank lines, except inside ``` fences (code may contain blank lines).
+  function splitBlocks(text) {
+    var out = [], cur = [], inFence = false;
+    text.split('\n').forEach(function (line) {
+      if (line.indexOf('```') === 0) {
+        if (!inFence) { if (cur.length) out.push(cur.join('\n')); cur = [line]; inFence = true; }
+        else { cur.push(line); out.push(cur.join('\n')); cur = []; inFence = false; }
+        return;
+      }
+      if (inFence) { cur.push(line); return; }
+      if (line.trim() === '') { if (cur.length) { out.push(cur.join('\n')); cur = []; } return; }
+      cur.push(line);
+    });
+    if (cur.length) out.push(cur.join('\n'));
+    return out;
+  }
   function render(ch) {
     var box = $('page'); box.textContent = '';
     var h = document.createElement('h1'); h.textContent = ch.title; box.appendChild(h);
-    String(ch.content || '').split(/\n{2,}/).forEach(function (blk) {
+    splitBlocks(String(ch.content || '')).forEach(function (blk) {
+      if (blk.indexOf('```') === 0) {
+        var pre = document.createElement('pre'), code = document.createElement('code');
+        code.textContent = blk.replace(/^```[^\n]*\n?/, '').replace(/\n?```$/, '');
+        pre.appendChild(code); box.appendChild(pre); return;
+      }
       blk = blk.trim(); if (!blk) return;
       var el;
       var im = /^!\[([^\]]*)\]\(([a-z0-9_-]+)\)$/.exec(blk);
@@ -40,6 +61,8 @@
       else if ((im = /^\[([^\]]+)\]\((https:\/\/www\.linkedin\.com\/in\/[A-Za-z0-9_-]+\/?)\)$/.exec(blk))) { el = document.createElement('p'); var a = document.createElement('a'); a.textContent = im[1]; a.href = im[2]; a.target = '_blank'; a.rel = 'noopener'; el.appendChild(a); }
       else if (blk.indexOf('### ') === 0) { el = document.createElement('h3'); el.textContent = blk.slice(4); }
       else if (blk.indexOf('## ') === 0) { el = document.createElement('h2'); el.textContent = blk.slice(3); }
+      else if (blk.indexOf('> ') === 0) { el = document.createElement('blockquote'); el.className = 'callout'; blk.split('\n').forEach(function (l, i) { if (i) el.appendChild(document.createElement('br')); el.appendChild(document.createTextNode(l.replace(/^>\s?/, ''))); }); }
+      else if (/^1\. /.test(blk)) { el = document.createElement('ol'); blk.split('\n').forEach(function (l) { var li = document.createElement('li'); li.textContent = l.replace(/^\d+\.\s*/, ''); el.appendChild(li); }); }
       else if (blk.indexOf('- ') === 0) { el = document.createElement('ul'); blk.split('\n').forEach(function (l) { var li = document.createElement('li'); li.textContent = l.replace(/^-\s*/, ''); el.appendChild(li); }); }
       else { el = document.createElement('p'); el.textContent = blk; }
       box.appendChild(el);
