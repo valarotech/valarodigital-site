@@ -515,3 +515,6 @@ body.rd-hidden .rd-cover { display: flex; }
 .cta-band-inner > div:first-child { flex: 1 1 360px; }
 .cta-band:not(.cta-band-soft) .btn-ghost { color: #fff; background: transparent; border-color: rgba(255,255,255,.4); }
 .cf-box { min-height: 0; display: flex; justify-content: center; }
+
+/* Hero ghost button was turned dark-on-dark by the invoice page rule above (.btn-ghost{color:#333}). Restore the light style inside the dark hero. */
+.hero .btn-ghost { color: #fff; border-color: rgba(255,255,255,.28); background: rgba(255,255,255,.06); }
